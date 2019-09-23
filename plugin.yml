@@ -1,0 +1,10 @@
+name: Elementals
+main: com.gmail.kvkkuo.Elementals.Elementals
+version: 1.0
+api-version: 1.13
+commands:
+   class:
+      description: Modify and customize a player's class.
+      usage: /class
+      permission: Elementals.class
+      permission-message: You don't have permission.

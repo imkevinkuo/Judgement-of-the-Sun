@@ -1,0 +1,159 @@
+package com.gmail.kvkkuo.Elementals.commands;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import com.gmail.kvkkuo.Elementals.Elementals;
+import com.gmail.kvkkuo.Elementals.listeners.UpgradeMenu;
+
+public class ClassCommand implements CommandExecutor {
+ 
+	public Elementals plugin;	
+	
+	public ClassCommand(Elementals plugin){
+		this.plugin = plugin;
+	}
+	
+	// Classes:
+		// 0 - Duelist
+		// 1 - Raider
+		// 2 - Assassin
+		// 3 - Guardian
+		// 4 - Witherknight
+		// 5 - Paladin
+	public static Material[] selectors = {
+			Material.IRON_SWORD, 
+			Material.BLAZE_POWDER, 
+            Material.FEATHER, 
+            Material.CLAY, 
+            Material.BONE,
+            Material.GLOWSTONE_DUST
+    };
+	
+	public static String[] classNames = {
+			"Duelist", "Raider", "Assassin", "Guardian", "Witherknight", "Paladin"
+	};
+ 
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+		if(cmd.getName().equalsIgnoreCase("class")) {
+			if (sender instanceof Player) {
+				Player p = (Player) sender;
+				if (args.length == 0) {
+					String lowerclass = classNames[plugin.factions.get(p.getUniqueId())];
+					String uclass = Character.toUpperCase(lowerclass.charAt(0)) + lowerclass.substring(1);
+					p.sendMessage(ChatColor.BLUE + "---- " + ChatColor.AQUA + "Your Class " +ChatColor.BLUE + "----");
+					p.sendMessage(ChatColor.LIGHT_PURPLE + "You have chosen the path of the " + ChatColor.GOLD + uclass);
+				}
+				if (args.length == 1) {
+					String arg1 = args[0].toLowerCase();
+					if (arg1.equals("dummy")) {
+						LivingEntity z = (LivingEntity) p.getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
+						z.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 8));
+					}
+					if (arg1.equals("set")) {
+						String s = "Specify a class ID.";
+						for (int i = 0; i < classNames.length; i++) {
+							s += "\n" + i + ": " +  classNames[i];
+						}
+						p.sendMessage(s);
+					}
+					if (arg1.equals("rc")) {
+						p.sendMessage("Cooldowns reset!");
+						plugin.cooldowns.put(p.getUniqueId(), new Integer[]{1,1,1,1});
+					}
+					if (arg1.equals("upgrade")) {
+						ItemStack i = new ItemStack(Material.DIAMOND);
+						i.setAmount(4);
+						ItemMeta im = i.getItemMeta();
+						im.setDisplayName("Alpha Shard");
+						i.setItemMeta(im);
+						p.getInventory().addItem(i);
+						im.setDisplayName("Gamma Shard");
+						i.setItemMeta(im);
+						p.getInventory().addItem(i);
+						im.setDisplayName("Delta Shard");
+						i.setItemMeta(im);
+						p.getInventory().addItem(i);
+					}
+					if (arg1.equals("skills")) {
+						UpgradeMenu.DisplaySkills(plugin.skillmenu.get(p.getUniqueId()), plugin.factions.get(p.getUniqueId()), plugin.upgrades.get(p.getUniqueId())).open(p);;
+					}
+				}
+				if (args.length == 2) {
+					String arg1 = args[0].toLowerCase();
+					if (args[1].length() > 1) {
+						if (!Character.isDigit(args[1].charAt(0))) {
+							p.sendMessage("Include digit.");
+							return false;
+						}
+					}
+					Integer arg2 = Integer.parseInt(args[1]);
+					if (arg1.equals("set")) {
+						if (arg2 >= 0 && arg2 < 6) {
+							p.sendMessage("You have joined the " + classNames[arg2] + "s.");
+							plugin.factions.put(p.getUniqueId(), arg2);
+							p.getInventory().addItem(new ItemStack(selectors[arg2], 1));
+						}
+					}
+					if (arg1.equals("upgrade")) {
+						p.sendMessage("Usage: /class upgrade <spell> <level>");
+						p.sendMessage("<spell> must be: 0-3 or 4 (all).");
+						p.sendMessage("<level> must be 0-3.");
+					}
+				}
+				if (args.length == 3) {
+					String arg1 = args[0].toLowerCase();
+					Integer arg2 = 0;
+					Integer arg3 = 0;
+					try {
+						arg2 = Integer.parseInt(args[1]);
+					}
+					catch(Exception ex) {
+						ex.printStackTrace();
+					}
+					try {
+						arg3 = Integer.parseInt(args[2]);
+					}
+					catch(Exception ex) {
+						ex.printStackTrace();
+					}
+					if (arg1.equals("upgrade")) {
+						if (arg2 >= 0 && arg2 <= 4 && arg3 >= 0 && arg3 <= 3) {
+							Integer[] ups = plugin.upgrades.get(p.getUniqueId());
+							if (arg2 == 4) {
+								ups = new Integer[]{arg3, arg3, arg3, arg3};
+							}
+							else {
+								ups[arg2] = arg3;
+							}
+							plugin.upgrades.put(p.getUniqueId(), ups);
+							p.sendMessage("spellslot " + arg2 + " upgraded to type " + arg3);
+						}
+						else {
+							p.sendMessage("Usage: /class upgrade <spell> <level>");
+							p.sendMessage("<spell> must be: 0-3 or 4 (all).");
+							p.sendMessage("<level> must be 0-3.");
+						}
+					}
+				}
+		    }
+			else {
+				sender.sendMessage("Cannot execute from console!");
+				return false;
+		    }
+			return true;
+		}
+		return false; 
+	}
+}
