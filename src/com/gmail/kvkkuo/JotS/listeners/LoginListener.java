@@ -34,62 +34,58 @@ public class LoginListener implements Listener {
         plugin.loadConfig(p);
         
         // Upgrade Menu
-        IconMenu menu = new IconMenu(p.getName() + "'s Skills", 9, new IconMenu.OptionClickEventHandler() {
-            @Override
-            public void onOptionClick(IconMenu.OptionClickEvent event) {
-                Player p = event.getPlayer();
-                event.setWillClose(true);
-                UUID id = p.getUniqueId();
-                // Shard to be equipped
-                ItemStack i = p.getInventory().getItemInMainHand();
-                Integer s = event.getPosition();
-				//Unequip all
-				if (s == 8) {
-					Integer[] ups = plugin.upgrades.get(id);
-					for (int x = 0; x < 4; x++) {
-						if (ups[x] > 0) {
-							p.getInventory().addItem(UpgradeMenu.getShard(ups[x]));
-						}
-						ups[x] = 0;
+        IconMenu menu = new IconMenu(p.getName() + "'s Skills", 9, event1 -> {
+			Player p1 = event1.getPlayer();
+			event1.setWillClose(true);
+			UUID id1 = p1.getUniqueId();
+			// Shard to be equipped
+			ItemStack i = p1.getInventory().getItemInMainHand();
+			Integer s = event1.getPosition();
+			//Unequip all
+			if (s == 8) {
+				Integer[] ups = plugin.upgrades.get(id1);
+				for (int x = 0; x < 4; x++) {
+					if (ups[x] > 0) {
+						p1.getInventory().addItem(UpgradeMenu.getShard(ups[x]));
 					}
-					plugin.upgrades.put(id, ups);
-					p.sendMessage("All shards have been refunded!");
+					ups[x] = 0;
 				}
-                // If it isn't Unequip Shard
-                else {
-					Integer[] ups = plugin.upgrades.get(id);
-					if (ups[s/2] > 0) {
-						p.getInventory().addItem(UpgradeMenu.getShard(ups[s/2]));
-						p.sendMessage("Your " + UpgradeMenu.getShard(ups[s/2]).getItemMeta().getDisplayName() + " has been refunded to you.");
-						ups[s/2] = 0;
+				plugin.upgrades.put(id1, ups);
+				p1.sendMessage("All shards have been refunded!");
+			}
+			// If it isn't Unequip Shard
+			else {
+				Integer[] ups = plugin.upgrades.get(id1);
+				if (ups[s/2] > 0) {
+					p1.getInventory().addItem(UpgradeMenu.getShard(ups[s/2]));
+					p1.sendMessage("Your " + UpgradeMenu.getShard(ups[s/2]).getItemMeta().getDisplayName() + " has been refunded to you.");
+					ups[s/2] = 0;
+				}
+				String in = i.getItemMeta().getDisplayName();
+				if (in.endsWith("Shard")) {
+					Integer u = 0;
+					if (in.endsWith("Alpha Shard")) {
+						u = 1;
 					}
-					String in = i.getItemMeta().getDisplayName();
-					if (in.endsWith("Shard")) {
-						Integer u = 0;
-						if (in.endsWith("Alpha Shard")) {
-							u = 1;
-						}
-						if (in.endsWith("Gamma Shard")) {
-							u = 2;
-						}
-						if (in.endsWith("Delta Shard")) {
-							u = 3;
-						}
-						p.getInventory().remove(i);
-						if (i.getAmount() > 1) {
-							ItemStack usedstack = new ItemStack(i.getType(), i.getAmount() - 1);
-							usedstack.setItemMeta(i.getItemMeta());
-							p.getInventory().addItem(usedstack);
-						}
-						p.sendMessage("You equip the " + in + ".");
-						ups[s/2] = u;
-						plugin.upgrades.put(id, ups);
-						UpgradeMenu.DisplaySkills(plugin.skillmenu.get(id), plugin.factions.get(id), ups).open(p);
+					if (in.endsWith("Gamma Shard")) {
+						u = 2;
 					}
-
-                }
-            }
-        }, plugin);
+					if (in.endsWith("Delta Shard")) {
+						u = 3;
+					}
+					p1.getInventory().remove(i);
+					if (i.getAmount() > 1) {
+						ItemStack usedstack = new ItemStack(i.getType(), i.getAmount() - 1);
+						usedstack.setItemMeta(i.getItemMeta());
+						p1.getInventory().addItem(usedstack);
+					}
+					p1.sendMessage("You equip the " + in + ".");
+					ups[s/2] = u;
+					plugin.upgrades.put(id1, ups);
+					UpgradeMenu.DisplaySkills(plugin.skillmenu.get(id1), plugin.factions.get(id1), ups).open(p1);
+				}
+			}
+		}, plugin);
         plugin.skillmenu.put(id, menu);
     }
     

@@ -8,11 +8,8 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -58,6 +55,8 @@ public class Duelist {
 	private static BlockData obsblock = Material.OBSIDIAN.createBlockData();
 	private static BlockData ironblock = Material.IRON_BLOCK.createBlockData();
 	private static BlockData glowstone = Material.GLOWSTONE.createBlockData();
+	private static DustOptions pinkDust = new DustOptions(Color.fromRGB(255, 100, 200), 1);
+	private static DustOptions redDust = new DustOptions(Color.fromRGB(255, 0, 0), 1);
 	
 	public static HashMap<UUID, Stack<Item>> shields = new HashMap<UUID, Stack<Item>>();
 	public static String[] skills = new String[] {
@@ -336,7 +335,7 @@ public class Duelist {
 	}
 	//
 	private static void Will(Player p, Plugin plugin) {
-		p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 0));
+		p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 2));
 		p.getWorld().playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_IRON, 1, 1);
 		p.getWorld().spawnParticle(Particle.BLOCK_CRACK, p.getEyeLocation(), 20, 0.5, 0, 0.5, ironblock);
 	}
@@ -546,7 +545,7 @@ public class Duelist {
 			if (blocks.size() == 0) {
 				int type = p.getMetadata("spellshield").get(0).asInt();
 				p.removeMetadata("spellshield", plugin);
-				p.getWorld().spawnParticle(Particle.REDSTONE, p.getEyeLocation(), 20, 0.3, 0.3, 0.3, 0.5);
+				p.getWorld().spawnParticle(Particle.REDSTONE, p.getEyeLocation(), 20, 0.3, 0.3, 0.3, 0.5, pinkDust);
 				if (type == 0) {
 					p.addPotionEffect(duelistRegen);
 				}

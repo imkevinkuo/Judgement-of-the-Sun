@@ -59,8 +59,11 @@ public class IconMenu implements Listener {
         optionIcons = null;
     }
    
-    @EventHandler(priority=EventPriority.MONITOR)
+    @EventHandler
     void onInventoryClick(InventoryClickEvent event) {
+        if (!event.getInventory().getHolder().equals(this)) {
+            return;
+        }
         event.setCancelled(true);
         int slot = event.getRawSlot();
         if (slot >= 0 && slot < size && optionNames[slot] != null) {
