@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.commands;
+package com.gmail.kvkkuo.JotS.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,47 +13,30 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.gmail.kvkkuo.Elementals.Elementals;
-import com.gmail.kvkkuo.Elementals.listeners.UpgradeMenu;
+import com.gmail.kvkkuo.JotS.JotS;
+import com.gmail.kvkkuo.JotS.listeners.UpgradeMenu;
 
 public class ClassCommand implements CommandExecutor {
  
-	public Elementals plugin;	
+	public JotS plugin;
 	
-	public ClassCommand(Elementals plugin){
+	public ClassCommand(JotS plugin){
 		this.plugin = plugin;
 	}
-	
-	// Classes:
-		// 0 - Duelist
-		// 1 - Raider
-		// 2 - Assassin
-		// 3 - Guardian
-		// 4 - Witherknight
-		// 5 - Paladin
-	public static Material[] selectors = {
-			Material.IRON_SWORD, 
-			Material.BLAZE_POWDER, 
-            Material.FEATHER, 
-            Material.CLAY, 
-            Material.BONE,
-            Material.GLOWSTONE_DUST
-    };
-	
-	public static String[] classNames = {
-			"Duelist", "Raider", "Assassin", "Guardian", "Witherknight", "Paladin"
-	};
- 
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		if(cmd.getName().equalsIgnoreCase("class")) {
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
+				Integer pFaction = plugin.factions.get(p.getUniqueId());
 				if (args.length == 0) {
-					String lowerclass = classNames[plugin.factions.get(p.getUniqueId())];
-					String uclass = Character.toUpperCase(lowerclass.charAt(0)) + lowerclass.substring(1);
-					p.sendMessage(ChatColor.BLUE + "---- " + ChatColor.AQUA + "Your Class " +ChatColor.BLUE + "----");
-					p.sendMessage(ChatColor.LIGHT_PURPLE + "You have chosen the path of the " + ChatColor.GOLD + uclass);
+					String faction = "Civilian";
+					if (pFaction >= 0) {
+						faction = JotS.classNames[pFaction];
+					}
+					String uclass = Character.toUpperCase(faction.charAt(0)) + faction.substring(1);
+					p.sendMessage(ChatColor.LIGHT_PURPLE + "You are a " + ChatColor.GOLD + uclass + ".");
 				}
 				if (args.length == 1) {
 					String arg1 = args[0].toLowerCase();
@@ -63,8 +46,8 @@ public class ClassCommand implements CommandExecutor {
 					}
 					if (arg1.equals("set")) {
 						String s = "Specify a class ID.";
-						for (int i = 0; i < classNames.length; i++) {
-							s += "\n" + i + ": " +  classNames[i];
+						for (int i = 0; i < JotS.classNames.length; i++) {
+							s += "\n" + i + ": " +  JotS.classNames[i];
 						}
 						p.sendMessage(s);
 					}
@@ -87,7 +70,8 @@ public class ClassCommand implements CommandExecutor {
 						p.getInventory().addItem(i);
 					}
 					if (arg1.equals("skills")) {
-						UpgradeMenu.DisplaySkills(plugin.skillmenu.get(p.getUniqueId()), plugin.factions.get(p.getUniqueId()), plugin.upgrades.get(p.getUniqueId())).open(p);;
+						UpgradeMenu.DisplaySkills(plugin.skillmenu.get(p.getUniqueId()),
+								plugin.factions.get(p.getUniqueId()), plugin.upgrades.get(p.getUniqueId())).open(p);
 					}
 				}
 				if (args.length == 2) {
@@ -101,9 +85,11 @@ public class ClassCommand implements CommandExecutor {
 					Integer arg2 = Integer.parseInt(args[1]);
 					if (arg1.equals("set")) {
 						if (arg2 >= 0 && arg2 < 6) {
-							p.sendMessage("You have joined the " + classNames[arg2] + "s.");
+							p.sendMessage("You are now a " + JotS.classNames[arg2] + ".");
 							plugin.factions.put(p.getUniqueId(), arg2);
-							p.getInventory().addItem(new ItemStack(selectors[arg2], 1));
+							if (arg2 >= 0) {
+								p.getInventory().addItem(new ItemStack(JotS.selectors[arg2], 1));
+							}
 						}
 					}
 					if (arg1.equals("upgrade")) {

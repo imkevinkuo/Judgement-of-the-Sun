@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.classes;
+package com.gmail.kvkkuo.JotS.classes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +25,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.gmail.kvkkuo.Elementals.utils.FireworkPlayer;
-import com.gmail.kvkkuo.Elementals.utils.RayTrace;
-import com.gmail.kvkkuo.Elementals.utils.Utils;
+import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
+import com.gmail.kvkkuo.JotS.utils.Utils;
 
 public class Guardian {
 	public static String[] skills = new String[]{
@@ -109,7 +109,7 @@ public class Guardian {
 		return cooldown;
 	}
 	
-	public static void Howl(final Player p, Plugin plugin) {
+	public static void Howl(Player p, Plugin plugin) {
 		p.playSound(p.getLocation(), Sound.ENTITY_WOLF_HOWL, 3, 1);
 		FireworkPlayer.fire(p.getLocation(), Type.BALL_LARGE, Color.GRAY, false);
 		for (Entity e:p.getNearbyEntities(4, 4, 4)) {
@@ -118,7 +118,7 @@ public class Guardian {
 			}
 		}
 	}
-	public static void Growl(final Player p, Plugin plugin) {
+	public static void Growl(Player p, Plugin plugin) {
 		p.playSound(p.getLocation(), Sound.ENTITY_BLAZE_DEATH, 3, 1);
 		FireworkPlayer.fire(p.getLocation(), Type.BALL_LARGE, Color.ORANGE, false);
 		for (Entity e:p.getNearbyEntities(4, 4, 4)) {
@@ -127,7 +127,7 @@ public class Guardian {
 			}
 		}
 	}
-	public static void Roar(final Player p, Plugin plugin) {
+	public static void Roar(Player p, Plugin plugin) {
 		p.playSound(p.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 5, 1);
 		FireworkPlayer.fire(p.getLocation(), Type.BALL_LARGE, Color.RED, false);
 		for (Entity e:p.getNearbyEntities(4, 4, 4)) {
@@ -137,7 +137,7 @@ public class Guardian {
 			}
 		}
 	}
-	public static void Call(final Player p, Plugin plugin) {
+	public static void Call(Player p, Plugin plugin) {
 		p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 5, 1);
 		FireworkPlayer.fire(p.getLocation(), Type.BALL_LARGE, Color.BLACK, false);
 
@@ -168,7 +168,7 @@ public class Guardian {
 		}
 	}
 	
-	public static void Spines(final Player p, final Plugin plugin) {
+	public static void Spines(Player p, Plugin plugin) {
 		FireworkPlayer.fire(p.getLocation(), Type.BALL, Color.OLIVE, true);
 		p.setMetadata("spines", new FixedMetadataValue(plugin, true));
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -178,7 +178,7 @@ public class Guardian {
 			}
 		},	(200));
 	}
-	public static void Spirit(final Player p, Plugin plugin) {
+	public static void Spirit(Player p, Plugin plugin) {
 		FireworkPlayer.fire(p.getLocation(), Type.BALL, Color.SILVER, true);
 		p.setMetadata("spirit", new FixedMetadataValue(plugin, true));
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -188,7 +188,7 @@ public class Guardian {
 			}
 		},	(200));
 	}
-	public static void Kinetic(final Player p, Plugin plugin) {
+	public static void Kinetic(Player p, Plugin plugin) {
 		FireworkPlayer.fire(p.getLocation(), Type.BALL, Color.PURPLE, true);
 		p.setMetadata("kinetic", new FixedMetadataValue(plugin, true));
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -199,7 +199,7 @@ public class Guardian {
 			}
 		},	(200));
 	}
-	public static void Mirror(final Player p, Plugin plugin) {
+	public static void Mirror(Player p, Plugin plugin) {
 		Integer count = 0;
 		Integer interval = 5;
 		Integer duration = 160;
@@ -279,10 +279,10 @@ public class Guardian {
 		}
 		return false;
 	}
-	public static void Totem(final Player p, final Plugin plugin, int type) {
+	public static void Totem(Player p, Plugin plugin, int type) {
 		Material m = Material.GREEN_STAINED_GLASS;
 				
-		final Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(m));
+		Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(m));
 		item.setVelocity(p.getLocation().getDirection().multiply(0.5));
 		item.setPickupDelay(Integer.MAX_VALUE);
 

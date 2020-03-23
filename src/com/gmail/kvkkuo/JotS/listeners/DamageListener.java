@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.listeners;
+package com.gmail.kvkkuo.JotS.listeners;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,29 +26,29 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.gmail.kvkkuo.Elementals.Elementals;
-import com.gmail.kvkkuo.Elementals.classes.Assassin;
-import com.gmail.kvkkuo.Elementals.classes.Duelist;
-import com.gmail.kvkkuo.Elementals.classes.Paladin;
-import com.gmail.kvkkuo.Elementals.utils.Utils;
+import com.gmail.kvkkuo.JotS.JotS;
+import com.gmail.kvkkuo.JotS.classes.Assassin;
+import com.gmail.kvkkuo.JotS.classes.Duelist;
+import com.gmail.kvkkuo.JotS.classes.Paladin;
+import com.gmail.kvkkuo.JotS.utils.Utils;
 
 public class DamageListener implements Listener {
 	
-	public static final DamageCause[] G_VALUES = new DamageCause[] {
+	public static DamageCause[] G_VALUES = new DamageCause[] {
 		DamageCause.ENTITY_ATTACK, DamageCause.ENTITY_SWEEP_ATTACK, DamageCause.FIRE, DamageCause.FIRE_TICK,
 		DamageCause.DRAGON_BREATH, DamageCause.BLOCK_EXPLOSION, DamageCause.ENTITY_EXPLOSION
 	}; // Glacial Shielding
 	
-	public static final DamageCause[] M_VALUES = new DamageCause[] {
+	public static DamageCause[] M_VALUES = new DamageCause[] {
 		DamageCause.ENTITY_ATTACK, DamageCause.ENTITY_SWEEP_ATTACK			
 	}; // Divine Fire Shielding
 	
-	public static final Set<DamageCause> glacialBlocks = new HashSet<>(Arrays.asList(G_VALUES));
-	public static final Set<DamageCause> meleeAttacks = new HashSet<>(Arrays.asList(M_VALUES));
+	public static Set<DamageCause> glacialBlocks = new HashSet<>(Arrays.asList(G_VALUES));
+	public static Set<DamageCause> meleeAttacks = new HashSet<>(Arrays.asList(M_VALUES));
 	
-	public Elementals plugin;
+	public JotS plugin;
 	
-	public DamageListener(Elementals plugin) {
+	public DamageListener(JotS plugin) {
 		this.plugin = plugin;
 	}
 	

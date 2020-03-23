@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.listeners;
+package com.gmail.kvkkuo.JotS.listeners;
 
 import java.util.UUID;
 
@@ -10,22 +10,22 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.gmail.kvkkuo.Elementals.Elementals;
-import com.gmail.kvkkuo.Elementals.classes.Assassin;
-import com.gmail.kvkkuo.Elementals.classes.Duelist;
-import com.gmail.kvkkuo.Elementals.classes.Guardian;
-import com.gmail.kvkkuo.Elementals.classes.Paladin;
-import com.gmail.kvkkuo.Elementals.classes.Raider;
-import com.gmail.kvkkuo.Elementals.classes.Witherknight;
+import com.gmail.kvkkuo.JotS.JotS;
+import com.gmail.kvkkuo.JotS.classes.Assassin;
+import com.gmail.kvkkuo.JotS.classes.Duelist;
+import com.gmail.kvkkuo.JotS.classes.Guardian;
+import com.gmail.kvkkuo.JotS.classes.Paladin;
+import com.gmail.kvkkuo.JotS.classes.Raider;
+import com.gmail.kvkkuo.JotS.classes.Witherknight;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
  
 public class CastListener implements Listener {
 	
-	public Elementals plugin;	
+	public JotS plugin;
 	
-	public CastListener(Elementals plugin){
+	public CastListener(JotS plugin){
 		this.plugin = plugin;
 	}
 	

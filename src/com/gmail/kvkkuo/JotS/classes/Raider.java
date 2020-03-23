@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.classes;
+package com.gmail.kvkkuo.JotS.classes;
 
 import java.util.ArrayList;
 
@@ -28,9 +28,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import com.gmail.kvkkuo.Elementals.utils.RayTrace;
-import com.gmail.kvkkuo.Elementals.utils.Utils;
-import com.gmail.kvkkuo.Elementals.utils.Utils.Plane;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
+import com.gmail.kvkkuo.JotS.utils.Utils;
+import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
 
 public class Raider {
 	
@@ -124,13 +124,13 @@ public class Raider {
 		}
 		return cooldown;
 	}
-	public static void Shot(final Player p, Integer cooldown, Plugin plugin) {
-		final Fireball fire = p.launchProjectile(Fireball.class);
+	public static void Shot(Player p, Integer cooldown, Plugin plugin) {
+		Fireball fire = p.launchProjectile(Fireball.class);
 		fire.setVelocity(p.getLocation().getDirection());
 		fire.setShooter(p);
 		fire.setMetadata("shot", new FixedMetadataValue(plugin, true));
 	}
-	public static void Breath(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Breath(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_DEATH, 5, 0);
 		Integer range = 8, count = 0;
 		Vector dir = p.getLocation().getDirection().normalize().multiply(0.5);
@@ -187,7 +187,7 @@ public class Raider {
 			}
 		}
 	}
-	public static void Burst(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Burst(Player p, Integer cooldown, Plugin plugin) {
 		ArrayList<LivingEntity> list = new ArrayList<LivingEntity>();
 		World w = p.getWorld();
 		w.playSound(p.getLocation(), Sound.ENTITY_BLAZE_AMBIENT, 1, 1);
@@ -271,14 +271,14 @@ public class Raider {
 		is.setItemMeta(pm);
 		return is;
 	}
-	public static void Healing(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Healing(Player p, Integer cooldown, Plugin plugin) {
 		World w = p.getWorld();
 		ThrownPotion tp = (ThrownPotion) w.spawnEntity(p.getLocation(), EntityType.SPLASH_POTION);
 		tp.setItem(coloredPotion("heal", Color.FUCHSIA, Material.SPLASH_POTION));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, 0));
 		p.removePotionEffect(PotionEffectType.POISON);
 	}
-	public static void Blinding(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Blinding(Player p, Integer cooldown, Plugin plugin) {
 		Vector v = p.getLocation().getDirection().normalize().multiply(0.3);
 		double x = v.getX();
 		double z = v.getZ();
@@ -292,7 +292,7 @@ public class Raider {
 			tp.setVelocity(vectors[i]);
 		}
 	}
-	public static void Frost(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Frost(Player p, Integer cooldown, Plugin plugin) {
 		World w = p.getWorld();
 		ThrownPotion tp = (ThrownPotion) w.spawnEntity(p.getLocation(), EntityType.SPLASH_POTION);
 		tp.setItem(coloredPotion("frost", Color.AQUA, Material.SPLASH_POTION));
@@ -300,7 +300,7 @@ public class Raider {
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 0));
 		
 	}
-	public static void Famine(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Famine(Player p, Integer cooldown, Plugin plugin) {
 		Vector v = p.getLocation().getDirection().normalize().multiply(0.3);
 		double x = v.getX();
 		double z = v.getZ();
@@ -315,14 +315,14 @@ public class Raider {
 		}
 	}
 	
-	public static void Leap(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Leap(Player p, Integer cooldown, Plugin plugin) {
 		p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 4, 1);
 		p.getWorld().spawnParticle(Particle.FLAME, p.getLocation(), 30, 1, 0, 1, 0.3);
 		p.setVelocity(p.getLocation().getDirection().multiply(-2).setY(1));
 		p.setMetadata("nofall", new FixedMetadataValue(plugin, true));
 		Utils.applyNearby(p.getLocation(), p, 4, 4, 4, (LivingEntity le) -> {le.setFireTicks(60);});
 	}
-	public static void Smash(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Smash(Player p, Integer cooldown, Plugin plugin) {
 		p.setVelocity(p.getLocation().getDirection().multiply(2).setY(1));
 		p.setMetadata("bsmash", new FixedMetadataValue(plugin, true));
 		p.setMetadata("nofall", new FixedMetadataValue(plugin, true));
@@ -352,7 +352,7 @@ public class Raider {
 		}
 		Utils.applyNearby(p.getLocation(), p, 3, 1, 3, (LivingEntity le) -> {le.setFireTicks(60);});
 	}
-	public static void Shells(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Shells(Player p, Integer cooldown, Plugin plugin) {
 		p.setVelocity(p.getLocation().getDirection().multiply(2).setY(1));
 		p.setMetadata("nofall", new FixedMetadataValue(plugin, true));
 		for (int l = 0; l < 5; l ++) {
@@ -385,7 +385,7 @@ public class Raider {
 			}.runTaskLater(plugin, l*4);
 		}
 	}
-	public static void Rocket(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Rocket(Player p, Integer cooldown, Plugin plugin) {
 		int delay = 40;
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, delay, 1));
 		p.playSound(p.getLocation(), Sound.ENTITY_TNT_PRIMED, 1, 1);
@@ -408,7 +408,7 @@ public class Raider {
 		}.runTaskLater(plugin, delay);
 	}
 
-	public static void Hooked(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Hooked(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 4, 1);
 		ArrayList<Item> hooklist = new ArrayList<Item>();
 		for (int i = 0; i < 8; i ++) {
@@ -456,7 +456,7 @@ public class Raider {
 			}.runTaskLater(plugin, 60);
 		}
 	}
-	public static void Singed(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Singed(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1, 1);
 		for (int i = 0; i < 8; i ++) {
 			ItemStack is = new ItemStack(Material.BLAZE_POWDER);
@@ -487,7 +487,7 @@ public class Raider {
 		}
 	}
 	private static BlockData spikedata = Material.DEAD_BUSH.createBlockData();
-	public static void Spiked(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Spiked(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_SKELETON_STEP, 5, 1);
 
 		for (int i = 0; i < 8; i ++) {
@@ -496,7 +496,7 @@ public class Raider {
 			im.setDisplayName("spike" + i + p.getName());
 			is.setItemMeta(im);
 
-			final Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
+			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
 			item.setVelocity(p.getLocation().getDirection().multiply(0.3 + 0.12*i));
 			item.setPickupDelay(Integer.MAX_VALUE);
 
@@ -521,7 +521,7 @@ public class Raider {
 			}.runTaskLater(plugin, 120);
 		}
 	}
-	public static void Barbed(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Barbed(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 4, 1);
 
 		for (int i = 0; i < 8; i ++) {
@@ -530,7 +530,7 @@ public class Raider {
 			im.setDisplayName("barb" + i + p.getName());
 			is.setItemMeta(im);
 
-			final Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
+			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
 			item.setVelocity(p.getLocation().getDirection().multiply(0.3 + 0.12*i));
 			item.setPickupDelay(Integer.MAX_VALUE);
 

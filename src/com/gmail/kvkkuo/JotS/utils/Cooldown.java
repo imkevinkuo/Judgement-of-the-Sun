@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.utils;
+package com.gmail.kvkkuo.JotS.utils;
 
 import java.util.UUID;
 
@@ -7,12 +7,12 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.gmail.kvkkuo.Elementals.Elementals;
-import com.gmail.kvkkuo.Elementals.listeners.CastListener;
+import com.gmail.kvkkuo.JotS.JotS;
+import com.gmail.kvkkuo.JotS.listeners.CastListener;
 
 public class Cooldown extends BukkitRunnable {
-	public Elementals plugin;
-	public Cooldown(Elementals plugin){
+	public JotS plugin;
+	public Cooldown(JotS plugin){
 		this.plugin = plugin;
 	}
 	 
@@ -29,9 +29,6 @@ public class Cooldown extends BukkitRunnable {
 			Integer[] cds = plugin.cooldowns.get(id);
 			boolean update = false;
 			for (int x = 0; x < 4; x++) {
-				if (cds[x] == null) {
-					cds[x] = 0;
-				}
 				if (cds[x] > 0) {
 					update = update || (x == spell);
 					cds[x] = cds[x] - 1;

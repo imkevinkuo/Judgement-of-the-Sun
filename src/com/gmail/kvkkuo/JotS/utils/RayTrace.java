@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.utils;
+package com.gmail.kvkkuo.JotS.utils;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

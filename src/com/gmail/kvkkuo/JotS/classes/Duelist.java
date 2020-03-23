@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.classes;
+package com.gmail.kvkkuo.JotS.classes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,19 +27,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import com.gmail.kvkkuo.Elementals.utils.RayTrace;
-import com.gmail.kvkkuo.Elementals.utils.Utils;
-import com.gmail.kvkkuo.Elementals.utils.Utils.Plane;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
+import com.gmail.kvkkuo.JotS.utils.Utils;
+import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
 
 public class Duelist {
 	
-	private static final PotionEffectType[] P_BUFFS = new PotionEffectType[] {
+	private static PotionEffectType[] P_BUFFS = new PotionEffectType[] {
 		PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.FIRE_RESISTANCE, 
 		PotionEffectType.INCREASE_DAMAGE, PotionEffectType.INVISIBILITY,
 		PotionEffectType.JUMP, PotionEffectType.REGENERATION, PotionEffectType.SPEED
 	};
 	
-	private static final PotionEffectType[] P_NERFS = new PotionEffectType[] {
+	private static PotionEffectType[] P_NERFS = new PotionEffectType[] {
 		PotionEffectType.WEAKNESS, PotionEffectType.BLINDNESS, 
 		PotionEffectType.HUNGER, PotionEffectType.POISON,
 		PotionEffectType.SLOW, PotionEffectType.CONFUSION
@@ -164,7 +164,7 @@ public class Duelist {
 				for (int count = 0; count < (int) range/space; count++) {
 					new BukkitRunnable() {
 						public void run() {
-							final Location l = eye.next();
+							Location l = eye.next();
 							if (l.getBlock().getType().equals(Material.AIR)) {
 								w.spawnParticle(Particle.CRIT, l, 4, 0, 0, 0, 0.3);
 								Utils.applyNearby(l, p, 1, 1, 1, (LivingEntity le) -> {	
@@ -279,7 +279,7 @@ public class Duelist {
 		Location initial = p.getLocation();
 		Vector up = new Vector(0, 0.5, 0);
 		p.setVelocity(up);
-		final Vector v = p.getLocation().getDirection().multiply(4).setY(0);
+		Vector v = p.getLocation().getDirection().multiply(4).setY(0);
 		new BukkitRunnable() {
 			public void run() {
 				w.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, 1, 1);
@@ -321,7 +321,7 @@ public class Duelist {
 					le.setVelocity(new Vector(0,-1.2,0));
 				});
 				for (int i = 0; i < 3; i++) {
-					final int in = i*4;
+					int in = i*4;
 					new BukkitRunnable() {
 						@Override
 						public void run() {

@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.classes;
+package com.gmail.kvkkuo.JotS.classes;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -27,8 +27,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import com.gmail.kvkkuo.Elementals.utils.FireworkPlayer;
-import com.gmail.kvkkuo.Elementals.utils.Utils;
+import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
+import com.gmail.kvkkuo.JotS.utils.Utils;
 
 public class Assassin {
 	public static HashMap<UUID, Integer> mirages = new HashMap<UUID, Integer>();
@@ -121,7 +121,7 @@ public class Assassin {
 		return cooldown;
 	}
 	public static void Smoke(Player p, Plugin plugin) {
-		final Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.QUARTZ_BLOCK));
+		Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.QUARTZ_BLOCK));
 		item.setVelocity(p.getLocation().getDirection());
 		item.setPickupDelay(Integer.MAX_VALUE);
 		new BukkitRunnable() {
@@ -142,13 +142,13 @@ public class Assassin {
 	public static void Spray(Player p, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_SPIDER_DEATH, 5, 0);
 		for (int i = 0; i < 8; i ++) {
-			final ItemStack is = new ItemStack(Material.STRING);
+			ItemStack is = new ItemStack(Material.STRING);
 			ItemMeta im = is.getItemMeta();
 			im.setDisplayName("string" + i);
 			is.setItemMeta(im);
 			new BukkitRunnable() {
 				public void run() {
-					final Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
+					Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
 					Random rand = new Random();
 					item.setVelocity(p.getLocation().getDirection().multiply(1+rand.nextDouble()).add(new Vector((rand.nextDouble() - 0.5)/2, (rand.nextDouble() - 0.5)/2, (rand.nextDouble() - 0.5)/2)));
 					item.setPickupDelay(Integer.MAX_VALUE);
@@ -346,7 +346,7 @@ public class Assassin {
 			le.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 80, 0));
 		});
 	}
-	public static boolean Mirage(final Player p, Plugin plugin) {
+	public static boolean Mirage(Player p, Plugin plugin) {
 		UUID id = p.getUniqueId();
 		Stealth(p, plugin, 50);
 		if (mirages.containsKey(id)) {

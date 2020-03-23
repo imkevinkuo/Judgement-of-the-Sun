@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.listeners;
+package com.gmail.kvkkuo.JotS.listeners;
 
 import java.util.UUID;
 
@@ -9,13 +9,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.kvkkuo.Elementals.Elementals;
+import com.gmail.kvkkuo.JotS.JotS;
 
 public class UpgradeListener implements Listener {
 	
-	public Elementals plugin;	
+	public JotS plugin;
 	
-	public UpgradeListener(Elementals plugin) {
+	public UpgradeListener(JotS plugin) {
 		this.plugin = plugin;
 	}
 	
@@ -30,12 +30,6 @@ public class UpgradeListener implements Listener {
 				if (i.getItemMeta().getDisplayName().endsWith("Shard")) {
 					Integer faction = plugin.factions.get(id);
 		    		Integer[] ups = plugin.upgrades.get(id);
-					for (int x = 0; x < 4; x++) {
-						if (ups[x].equals(null)) {
-							ups[x] = 0;
-						}
-					}
-					plugin.upgrades.put(id, ups);
 					UpgradeMenu.DisplaySkills(plugin.skillmenu.get(id), faction, ups).open(p);
 				}
 			}

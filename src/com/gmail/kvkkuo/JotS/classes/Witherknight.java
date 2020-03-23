@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.classes;
+package com.gmail.kvkkuo.JotS.classes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -25,10 +25,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import com.gmail.kvkkuo.Elementals.utils.FireworkPlayer;
-import com.gmail.kvkkuo.Elementals.utils.RayTrace;
-import com.gmail.kvkkuo.Elementals.utils.Utils;
-import com.gmail.kvkkuo.Elementals.utils.Utils.Plane;
+import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
+import com.gmail.kvkkuo.JotS.utils.Utils;
+import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
 
 public class Witherknight {
 	public static String[] skills = new String[]{
@@ -119,8 +119,8 @@ public class Witherknight {
 		}
 		return cooldown;
 	}
-	public static void Caustic(final Player p, Integer cooldown, Plugin pl) {
-		final Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.SLIME_BLOCK));
+	public static void Caustic(Player p, Integer cooldown, Plugin pl) {
+		Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.SLIME_BLOCK));
 		item.setVelocity(p.getLocation().getDirection().multiply(1));
 		item.setPickupDelay(Integer.MAX_VALUE);
 
@@ -142,8 +142,8 @@ public class Witherknight {
 			}
 		}.runTaskTimer(pl, 1, 1);
 	}
-	public static void Corrupting(final Player p, Integer cooldown, final Plugin plugin) {
-		final Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.MOSSY_COBBLESTONE));
+	public static void Corrupting(Player p, Integer cooldown, Plugin plugin) {
+		Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.MOSSY_COBBLESTONE));
 
 		item.setVelocity(p.getLocation().getDirection().multiply(1));
 		item.setPickupDelay(Integer.MAX_VALUE);
@@ -152,7 +152,7 @@ public class Witherknight {
 			@Override
 			public void run() {
 				if (item.isOnGround()) {
-					final BukkitTask bt = new BukkitRunnable() {
+					BukkitTask bt = new BukkitRunnable() {
 						@Override
 						public void run() {
 							for (Location loca:Utils.getCirclePoints(item.getLocation(), Plane.XZ, 5, 40)) {
@@ -189,8 +189,8 @@ public class Witherknight {
 			}
 		}.runTaskTimer(plugin, 1, 1);
 	}
-	public static void Splitting(final Player p, Integer cooldown, final Plugin pl) {
-		final Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.OBSIDIAN));
+	public static void Splitting(Player p, Integer cooldown, Plugin pl) {
+		Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.OBSIDIAN));
 
 		item.setVelocity(p.getLocation().getDirection().multiply(1));
 		item.setPickupDelay(Integer.MAX_VALUE);
@@ -208,7 +208,7 @@ public class Witherknight {
 						ItemStack i = new ItemStack(Material.TNT);
 						ItemMeta im = i.getItemMeta();
 						im.setDisplayName("TNT" + in + p.getName());
-						final Item frag = p.getWorld().dropItem(item.getLocation(), i);
+						Item frag = p.getWorld().dropItem(item.getLocation(), i);
 						if (in == 0) {
 							frag.setVelocity(vi);
 						}
@@ -245,8 +245,8 @@ public class Witherknight {
 			}
 		}.runTaskTimer(pl, 1, 1);
 	}
-	public static void Shrouding(final Player p, Integer cooldown, final Plugin plugin) {
-		final Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.BLACK_STAINED_GLASS));
+	public static void Shrouding(Player p, Integer cooldown, Plugin plugin) {
+		Item item = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.BLACK_STAINED_GLASS));
 
 		item.setVelocity(p.getLocation().getDirection().multiply(1));
 		item.setPickupDelay(Integer.MAX_VALUE);
@@ -256,7 +256,7 @@ public class Witherknight {
 			@Override
 			public void run() {
 				if (item.isOnGround()) {
-					final BukkitTask bt = new BukkitRunnable() {
+					BukkitTask bt = new BukkitRunnable() {
 						@Override
 						public void run() {
 							for (Location loca:Utils.getCirclePoints(item.getLocation(), Plane.XZ, 5)) {
@@ -289,7 +289,7 @@ public class Witherknight {
 			}
 		}.runTaskTimer(plugin, 1, 1);
 	}
-	public static void Barrage(final Player p, Integer cooldown, Plugin pl) {
+	public static void Barrage(Player p, Integer cooldown, Plugin pl) {
 		WitherSkull s1 = p.launchProjectile(WitherSkull.class);
 		s1.setShooter(p);
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
@@ -298,8 +298,8 @@ public class Witherknight {
 				s2.setShooter(p);
 		}},	10);
 	}
-	public static void Homing(final Player p, Integer cooldown, final Plugin pl) {
-		final WitherSkull s1 = p.launchProjectile(WitherSkull.class);
+	public static void Homing(Player p, Integer cooldown, Plugin pl) {
+		WitherSkull s1 = p.launchProjectile(WitherSkull.class);
 		s1.setShooter(p);
 		Integer count = 0;
 		while (count < 60) {
@@ -314,14 +314,14 @@ public class Witherknight {
 			}},	(count*1)+20);
 		}
 	}
-	public static void Triad(final Player p, Integer cooldown, final Plugin pl) {
+	public static void Triad(Player p, Integer cooldown, Plugin pl) {
 		for (int i = 0; i < 3; i++) {
 			WitherSkull s1 = p.launchProjectile(WitherSkull.class);
 			s1.setShooter(p);
 			s1.setVelocity(p.getLocation().getDirection().add(new Vector(Math.random() - 0.5, 0, Math.random() - 0.5).multiply(i/2)));
 		}
 	}
-	public static void Storm(final Player p, Integer cooldown, final Plugin plugin) {
+	public static void Storm(Player p, Integer cooldown, Plugin plugin) {
 
 	}
 	public static boolean Grip(Player p, Integer cooldown) {
@@ -346,7 +346,7 @@ public class Witherknight {
 		}
 		return true;
 	}
-	public static void Eye(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Eye(Player p, Integer cooldown, Plugin plugin) {
 		World w = p.getWorld();
 		Integer range = 10, count = 0;
 		RayTrace eye = new RayTrace(p, 10, 3);
@@ -371,11 +371,11 @@ public class Witherknight {
 			}
 		}
 	}
-	public static void Blast(final Player p, Integer cooldown, Plugin plugin) {
+	public static void Blast(Player p, Integer cooldown, Plugin plugin) {
 		Integer count = 0;
 		BlockIterator eye = new BlockIterator(p, 10);
 		while (eye.hasNext()) {
-			final Location l = eye.next().getLocation();
+			Location l = eye.next().getLocation();
 			if (l.getBlock().getType().equals(Material.AIR)) {
 				count++;
 				if (count%3 == 0) {
@@ -409,13 +409,13 @@ public class Witherknight {
 			}
 		}
 	}
-	public static void Desecrate(final Player p, Integer cooldown, Plugin pl) {
+	public static void Desecrate(Player p, Integer cooldown, Plugin pl) {
 		for (Integer count = 0; count < 8; count++) {
-			final Integer c = count;
+			Integer c = count;
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
 				public void run() {
 					p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 2, 1);
-					for (final Location loc:Utils.getStarPoints(p.getLocation(), Plane.XZ, c, 4)) {
+					for (Location loc:Utils.getStarPoints(p.getLocation(), Plane.XZ, c, 4)) {
 						p.getWorld().spawnParticle(Particle.SPELL_WITCH, loc, 10, 0.2, 0, 0.2, 1);
 						for (Entity e:p.getWorld().getNearbyEntities(loc, 3, 3, 3)) {
 							if (!e.equals(p)) {
@@ -460,11 +460,11 @@ public class Witherknight {
 		}
 		return true;
 	}
-	public static void Trap(final Player p, Integer cooldown, Plugin pl) {
-		final Item trap = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.NETHER_QUARTZ_ORE));
+	public static void Trap(Player p, Integer cooldown, Plugin pl) {
+		Item trap = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.NETHER_QUARTZ_ORE));
 		trap.setPickupDelay(Integer.MAX_VALUE);
 
-		final int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(pl, new Runnable() {
+		int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(pl, new Runnable() {
 			public void run() {
 				Integer activated = 0;
 				if (!trap.isDead()) {
@@ -497,11 +497,11 @@ public class Witherknight {
 			}
 		}, (600));
 	}
-	public static void Snare(final Player p, Integer cooldown, final Plugin pl) {
-		final Item trap = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.NETHER_QUARTZ_ORE));
+	public static void Snare(Player p, Integer cooldown, Plugin pl) {
+		Item trap = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.NETHER_QUARTZ_ORE));
 		trap.setPickupDelay(Integer.MAX_VALUE);
 
-		final int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(pl, new Runnable() {
+		int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(pl, new Runnable() {
 			public void run() {
 				Integer activated = 0;
 				if (!trap.isDead()) {
@@ -550,11 +550,11 @@ public class Witherknight {
 			}
 		},	(600));
 	}
-	public static void Shroud(final Player p, Integer cooldown, final Plugin pl) {
-		final Item trap = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.NETHER_QUARTZ_ORE));
+	public static void Shroud(Player p, Integer cooldown, Plugin pl) {
+		Item trap = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.NETHER_QUARTZ_ORE));
 		trap.setPickupDelay(Integer.MAX_VALUE);
 
-		final int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(pl, new Runnable() {
+		int taskID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(pl, new Runnable() {
 			public void run() {
 				Integer activated = 0;
 				if (!trap.isDead()) {
@@ -572,7 +572,7 @@ public class Witherknight {
 						p.sendMessage("Your Shadow Shroud has been triggered!");
 						trap.getWorld().playSound(trap.getLocation(), Sound.ENTITY_CREEPER_HURT, 5, 1);
 						FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, Color.SILVER, false);
-						final Location target = trap.getLocation();
+						Location target = trap.getLocation();
 						trap.remove();
 						
 						target.add(0, 12, 0);

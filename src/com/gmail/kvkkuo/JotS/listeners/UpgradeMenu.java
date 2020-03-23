@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.listeners;
+package com.gmail.kvkkuo.JotS.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -6,8 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.gmail.kvkkuo.Elementals.classes.*;
-import com.gmail.kvkkuo.Elementals.utils.IconMenu;
+import com.gmail.kvkkuo.JotS.classes.*;
+import com.gmail.kvkkuo.JotS.utils.IconMenu;
 
 public class UpgradeMenu {
 	static ItemStack[] assassinitems = new ItemStack[]{
@@ -33,7 +33,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.BLAZE_SPAWN_EGG),
 			new ItemStack(Material.GOLDEN_HORSE_ARMOR),
 			new ItemStack(Material.DIAMOND_HORSE_ARMOR),
-			new ItemStack(Material.CACTUS_GREEN),
+			new ItemStack(Material.GREEN_DYE),
 			new ItemStack(Material.EXPERIENCE_BOTTLE),
 			new ItemStack(Material.EMERALD),
 			new ItemStack(Material.GREEN_STAINED_GLASS_PANE),
@@ -56,7 +56,7 @@ public class UpgradeMenu {
 			Raider.coloredPotion("", Color.AQUA, Material.POTION),
 			Raider.coloredPotion("", Color.GREEN, Material.POTION),
 			new ItemStack(Material.LEATHER_BOOTS),
-			new ItemStack(Material.ROSE_RED),
+			new ItemStack(Material.RED_DYE),
 			new ItemStack(Material.BEETROOT),
 			new ItemStack(Material.FIREWORK_ROCKET),
 			new ItemStack(Material.TRIPWIRE_HOOK),
@@ -71,7 +71,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.TOTEM_OF_UNDYING),
 			new ItemStack(Material.GLOWSTONE_DUST),
 			new ItemStack(Material.GOLDEN_CARROT),
-			new ItemStack(Material.DANDELION_YELLOW),
+			new ItemStack(Material.YELLOW_DYE),
 			new ItemStack(Material.SUNFLOWER),
 			new ItemStack(Material.SNOWBALL),
 			new ItemStack(Material.ICE),

@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.utils;
+package com.gmail.kvkkuo.JotS.utils;
 
 import java.util.Arrays;
 
@@ -68,7 +68,7 @@ public class IconMenu implements Listener {
             OptionClickEvent e = new OptionClickEvent((Player)event.getWhoClicked(), slot, optionNames[slot]);
             handler.onOptionClick(e);
             if (e.willClose()) {
-                final Player p = (Player)event.getWhoClicked();
+                Player p = (Player)event.getWhoClicked();
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                     public void run() {
                         p.closeInventory();

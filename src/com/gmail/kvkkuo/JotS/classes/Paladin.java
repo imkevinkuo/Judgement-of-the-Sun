@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.classes;
+package com.gmail.kvkkuo.JotS.classes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +32,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import com.gmail.kvkkuo.Elementals.utils.FireworkPlayer;
-import com.gmail.kvkkuo.Elementals.utils.RayTrace;
-import com.gmail.kvkkuo.Elementals.utils.Utils;
-import com.gmail.kvkkuo.Elementals.utils.Utils.Plane;
+import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
+import com.gmail.kvkkuo.JotS.utils.Utils;
+import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
 
 public class Paladin {
 	public static String[] skills = new String[]{
@@ -199,27 +199,27 @@ public class Paladin {
 			new BukkitRunnable() {
 				public void run() {
 					if (ray.hasNext()) {
-					Location l = ray.next();
-					w.spawnParticle(Particle.FIREWORKS_SPARK, l, 2, 0, 0, 0, 0.05);
-					Utils.applyNearby(l, p, 1, 1, 1, (LivingEntity le) -> {
-						if (!affected.contains(le)) {
-							w.playSound(l, Sound.BLOCK_NOTE_BLOCK_SNARE, 1, 1);
-							w.spawnParticle(Particle.FIREWORKS_SPARK, le.getEyeLocation(), 8, 0, 0.5, 0, 0.05);
-							Utils.magicDamage(p, le, 4, plugin);
-							le.setVelocity(new Vector(0,0,0));
-							affected.add(le);
-							LivingEntity le2 = Utils.getNearestEntity(l, affected, 5, 3, 5);
-							if (le2 != null) {
-								Vector diff = le2.getLocation().subtract(le.getLocation()).toVector();
-								RayTrace v = new RayTrace(le.getEyeLocation(), diff, diff.length(), diff.length()/7);
-								new BukkitRunnable() {
-									public void run() {
-										Archelper(p, affected, v, plugin);
-									}
-								}.runTaskLater(plugin, 4);
+						Location l = ray.next();
+						w.spawnParticle(Particle.FIREWORKS_SPARK, l, 2, 0, 0, 0, 0.05);
+						Utils.applyNearby(l, p, 1, 1, 1, (LivingEntity le) -> {
+							if (!affected.contains(le)) {
+								w.playSound(l, Sound.BLOCK_NOTE_BLOCK_SNARE, 1, 1);
+								w.spawnParticle(Particle.FIREWORKS_SPARK, le.getEyeLocation(), 8, 0, 0.5, 0, 0.05);
+								Utils.magicDamage(p, le, 4, plugin);
+								le.setVelocity(new Vector(0,0,0));
+								affected.add(le);
+								LivingEntity le2 = Utils.getNearestEntity(l, affected, 5, 3, 5);
+								if (le2 != null) {
+									Vector diff = le2.getLocation().subtract(le.getLocation()).toVector();
+									RayTrace v = new RayTrace(le.getEyeLocation(), diff, diff.length(), diff.length()/7);
+									new BukkitRunnable() {
+										public void run() {
+											Archelper(p, affected, v, plugin);
+										}
+									}.runTaskLater(plugin, 4);
+								}
 							}
-						}
-					});
+						});
 					}
 				}
 			}.runTaskLater(plugin, i);

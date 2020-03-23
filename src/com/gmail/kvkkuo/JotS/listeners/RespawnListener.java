@@ -1,17 +1,17 @@
-package com.gmail.kvkkuo.Elementals.listeners;
+package com.gmail.kvkkuo.JotS.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import com.gmail.kvkkuo.Elementals.Elementals;
+import com.gmail.kvkkuo.JotS.JotS;
 
 public class RespawnListener implements Listener {
 	
-	public Elementals plugin;	
+	public JotS plugin;
 	
-	public RespawnListener(Elementals plugin){
+	public RespawnListener(JotS plugin){
 		this.plugin = plugin;
 	}
 	

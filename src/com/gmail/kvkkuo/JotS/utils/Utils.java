@@ -1,4 +1,4 @@
-package com.gmail.kvkkuo.Elementals.utils;
+package com.gmail.kvkkuo.JotS.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.BlockIterator;
 
-import com.gmail.kvkkuo.Elementals.classes.Duelist;
- 
+import com.gmail.kvkkuo.JotS.classes.Duelist;
+import org.bukkit.util.Vector;
+
 public class Utils {
 	
 	public static void clearMetadata(Player p, Plugin plugin) {
@@ -46,7 +47,8 @@ public class Utils {
 			target.damage(amount, source);
 		}
 	}
-	
+
+	// Applies to LivingEntities besides ex.
 	public static void applyNearby(Location l, LivingEntity ex, int x, int y, int z, applyNearbyOperator op) {
 		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
 			if (!e.equals(ex) && e instanceof LivingEntity) {
@@ -54,11 +56,36 @@ public class Utils {
 			}
 		}
 	}
-	
+
+	public static void applyNearbyPlayers(Location l, int r, applyNearbyOperator op) {
+		applyNearbyPlayers(l, r, r, r, op);
+	}
+
+	public static void applyNearbyPlayers(Location l, int x, int y, int z, applyNearbyOperator op) {
+		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
+			if (e instanceof Player) {
+				op.applyNearby((LivingEntity) e);
+			}
+		}
+	}
+
 	public static LivingEntity getNearestEntity(Location l, ArrayList<LivingEntity> ex, int x, int y, int z) {
 		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
 			if (!ex.contains(e) && e instanceof LivingEntity) {
 				return (LivingEntity) e;
+			}
+		}
+		return null;
+	}
+
+	public static Player getNearestPlayer(Location l, int r) {
+		return getNearestPlayer(l, r, r, r);
+	}
+
+	public static Player getNearestPlayer(Location l, int x, int y, int z) {
+		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
+			if (e instanceof Player) {
+				return (Player) e;
 			}
 		}
 		return null;
@@ -85,10 +112,96 @@ public class Utils {
         }
         return target;
     }
+
+	// rotate vector "dir" "angleD" degree on the x-z-(2D)-plane
+	public static Vector rotateYAxis(Vector dir, double angleD) {
+		double angleR = Math.toRadians(angleD);
+		double x = dir.getX();
+		double z = dir.getZ();
+		double cos = Math.cos(angleR);
+		double sin = Math.sin(angleR);
+		return (new Vector(x*cos+z*(-sin), 0.0, x*sin+z*cos)).normalize();
+	}
+
+	public static Location getBlockRelative(Location lc, int f, int s, int u) {
+		Location l = lc;
+		int forward = (int) ((Number) f).doubleValue();
+		int sideward = (int) ((Number) s).doubleValue();
+		int upward = (int) ((Number) u).doubleValue();
+		int x;
+		int y = upward;
+		int z;
+		Block b = l.getBlock();
+		Vector v = l.getDirection();
+		if (Math.abs(v.getX()) > Math.abs(v.getZ())) {
+			if (v.getX() > 0) {
+				x = forward;
+			}
+			else {
+				x = -forward;
+			}
+			if (v.getZ() > 0) {
+				z = sideward;
+			}
+			else {
+				z = -sideward;
+			}
+		}
+		else {
+			if (v.getZ() > 0) {
+				z = forward;
+			}
+			else {
+				z = -forward;
+			}
+			if (v.getX() > 0) {
+				x = sideward;
+			}
+			else {
+				x = -sideward;
+			}
+		}
+		Location loc = (b.getRelative(x, y, z).getLocation());
+		return loc;
+	}
+
+	public static Location getSquareLocation(Location playerloc, Integer guardnumber, Integer tickslived, Integer radius) {
+		Integer pos = tickslived%8;
+		Integer re = pos + (guardnumber*2);
+		while (re >= 8) {
+			re = re - 8;
+		}
+		if (re == 0) {
+			playerloc.add(new Vector(0, 0, radius));
+		}
+		if (re == 1) {
+			playerloc.add(new Vector(radius, 0, radius));
+		}
+		if (re == 2) {
+			playerloc.add(new Vector(radius, 0, 0));
+		}
+		if (re == 3) {
+			playerloc.add(new Vector(radius, 0, -radius));
+		}
+		if (re == 4) {
+			playerloc.add(new Vector(0, 0, -radius));
+		}
+		if (re == 5) {
+			playerloc.add(new Vector(-radius, 0, -radius));
+		}
+		if (re == 6) {
+			playerloc.add(new Vector(-radius, 0, 0));
+		}
+		if (re == 7) {
+			playerloc.add(new Vector(-radius, 0, radius));
+		}
+		Location back = playerloc;
+		return back;
+	}
 	
 	/**
 	 * Gets the points on the circle around the position in a specific plane.
-	 * @param location
+	 * @param position
 	 * @param range
 	 * @return points
 	 */
@@ -98,7 +211,7 @@ public class Utils {
  
 	/**
 	 * Gets the points on the circle around the position in a specific plane.
-	 * @param location
+	 * @param position
 	 * @param range
 	 * @param amount
 	 * @return points
@@ -109,7 +222,7 @@ public class Utils {
  
 	/**
 	 * Gets the points on the circle around the position in a specific plane.
-	 * @param location
+	 * @param position
 	 * @param range
 	 * @param amount
 	 * @param startrotation

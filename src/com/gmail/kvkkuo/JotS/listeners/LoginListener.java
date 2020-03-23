@@ -1,7 +1,12 @@
-package com.gmail.kvkkuo.Elementals.listeners;
+package com.gmail.kvkkuo.JotS.listeners;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
+import com.gmail.kvkkuo.JotS.utils.Utils;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -10,21 +15,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.kvkkuo.Elementals.Elementals;
-import com.gmail.kvkkuo.Elementals.utils.IconMenu;
+import com.gmail.kvkkuo.JotS.JotS;
+import com.gmail.kvkkuo.JotS.utils.IconMenu;
  
 public class LoginListener implements Listener {
 	
-	public Elementals plugin;	
+	public JotS plugin;
 	
-	public LoginListener(Elementals plugin){
+	public LoginListener(JotS plugin){
 		this.plugin = plugin;
 	}
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
     	Player p = event.getPlayer();
-    	final UUID id = p.getUniqueId();
+    	UUID id = p.getUniqueId();
     	
         plugin.loadConfig(p);
         
@@ -95,6 +100,7 @@ public class LoginListener implements Listener {
     
     @EventHandler
 	public void onPlayerKicked(PlayerKickEvent event) {
-    	plugin.leaveServer(event.getPlayer());
+		Player p = event.getPlayer();
+		plugin.leaveServer(p);
 	}
 }
