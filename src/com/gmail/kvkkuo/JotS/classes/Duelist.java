@@ -29,7 +29,8 @@ import com.gmail.kvkkuo.JotS.utils.Utils;
 import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
 
 public class Duelist {
-	
+	public static String[] SKILLS = Utils.readSkillsFromCSV("duelist.csv");
+
 	private static PotionEffectType[] P_BUFFS = new PotionEffectType[] {
 		PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.FIRE_RESISTANCE, 
 		PotionEffectType.INCREASE_DAMAGE, PotionEffectType.INVISIBILITY,
@@ -46,10 +47,11 @@ public class Duelist {
 	private static PotionEffect spearSlow = new PotionEffect(PotionEffectType.SLOW, 80, 2);
 	private static PotionEffect duelistRegen = new PotionEffect(PotionEffectType.REGENERATION, 40, 2);
 	private static PotionEffect duelistSpeed = new PotionEffect(PotionEffectType.SPEED, 40, 2);
-	private static List<PotionEffectType> pBuffs = new ArrayList<PotionEffectType>(Arrays.asList(P_BUFFS));
-	private static List<PotionEffectType> pNerfs = new ArrayList<PotionEffectType>(Arrays.asList(P_NERFS));
-	private static PotionEffect crippleHunger = new PotionEffect(PotionEffectType.HUNGER, 100, 1);
-	private static PotionEffect crippleWeak = new PotionEffect(PotionEffectType.WEAKNESS, 100, 0);
+	private static List<PotionEffectType> pBuffs = new ArrayList<>(Arrays.asList(P_BUFFS));
+	private static List<PotionEffectType> pNerfs = new ArrayList<>(Arrays.asList(P_NERFS));
+	private static PotionEffect crippleEffect = new PotionEffect(PotionEffectType.SLOW, 100, 1);
+	private static PotionEffect dazeEffect1 = new PotionEffect(PotionEffectType.BLINDNESS, 100, 0);
+	private static PotionEffect dazeEffect2 = new PotionEffect(PotionEffectType.SLOW_DIGGING, 100, 0);
 	private static BlockData glassblock = Material.GLASS.createBlockData();
 	private static BlockData redblock = Material.REDSTONE_BLOCK.createBlockData();
 	private static BlockData obsblock = Material.OBSIDIAN.createBlockData();
@@ -58,29 +60,8 @@ public class Duelist {
 	private static DustOptions pinkDust = new DustOptions(Color.fromRGB(255, 100, 200), 1);
 	private static DustOptions redDust = new DustOptions(Color.fromRGB(255, 0, 0), 1);
 	
-	public static HashMap<UUID, Stack<Item>> shields = new HashMap<UUID, Stack<Item>>();
-	public static String[] skills = new String[] {
-		// Melee AoE 
-		"Spearhead", "Thrust forward, dealing damage and Slowing all enemies in a line.",
-		"Sideswipe", "Swipe twice in a forward semicircle, damaging and throwing enemies to the side.",
-		"Axeheave", "Channel briefly, then deal heavy damage and knock back enemies in a cone.",
-		"Bladereap", "A triple combo attack that slashes forward, uppercuts, then slams enemies into the ground.",
-		// Buff
-		"Iron Will", "Gain Resistance I for 8 seconds.",
-		"Smoldering Rage", "Consecutive melee attacks increase in damage. Failing to deal damage removes the buff.",
-		"Gilded Resolve", "Gain an Absorption shield, increasing based on your missing health.",
-		"Tempered Fury", "Melee attacks drain health from enemies, increasing based on your missing health.",
-		// Melee Auto-attack
-		"Daze", "Your next melee attack forces your target's field of view upwards.",
-		"Cripple", "Your next melee attack applies Weakness and Hunger to the target.",
-		"Shatter", "Your next melee attack removes a random potion buff from the enemy.",
-		"Bleed", "Your next melee attack applies an unhealable bleed on your target.",
-		// Anti-magic
-		"Spellward", "Upon absorbing 3 magical attacks, gain a burst of Regeneration.",
-		"Spellblade", "Upon absorbing 3 magical attacks, your next melee attack applies a hostile effect.",
-		"Spellbind", "Upon absorbing 3 magical attacks, gain a large burst of Speed.",
-		"Spellthief", "Upon absorbing 3 magical attacks, your next melee attack extends enemy cooldowns."
-	};
+	public static HashMap<UUID, Stack<Item>> shields = new HashMap<>();
+
 	public static Integer cast(Player p, Integer spell, Integer cooldown, Integer upgrade, Plugin plugin) {
 		if (cooldown <= 0) {
 			boolean c = true;
@@ -176,8 +157,6 @@ public class Duelist {
 				}
 			}
 		}.runTaskLater(plugin, 10);
-		
-		
 	}
 	private static void Sideswipe(Player p, Plugin plugin) {
 		World w = p.getWorld();
@@ -421,30 +400,22 @@ public class Duelist {
 		for (Location l:Utils.getCirclePoints(ev.getEyeLocation(), Plane.XZ, 1, 8)) {
 			ev.getWorld().spawnParticle(Particle.NOTE, l, 1, 0, 0, 0, 0.2);
 		}
-		Location l = ev.getLocation();
-		l.setPitch(-90);
-		ev.teleport(l);
+		ev.addPotionEffect(dazeEffect1);
+		ev.addPotionEffect(dazeEffect2);
 	}
 	private static void Cripple(Player p, Plugin plugin) {
-		Empower(p, plugin, 1);	
+		Empower(p, plugin, 1);
 	}
 	public static void applyCripple(LivingEntity ev) {
 		ev.getWorld().spawnParticle(Particle.BLOCK_DUST, ev.getEyeLocation(), 20, 0.5, 0.5, 0.5, 0.2, obsblock);
-		ev.addPotionEffect(crippleWeak);
-		ev.addPotionEffect(crippleHunger);
+		ev.addPotionEffect(crippleEffect);
 	}
 	private static void Shatter(Player p, Plugin plugin) {
 		Empower(p, plugin, 2);	
 	}
-	public static void applyShatter(LivingEntity ev) {
+	public static void applyShatter(LivingEntity ev, Vector v) {
 		ev.getWorld().playSound(ev.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 1);
-		ev.getWorld().spawnParticle(Particle.BLOCK_DUST, ev.getEyeLocation(), 20, 0.5, 0.5, 0.5, 0.2, glassblock);
-		for (PotionEffectType pBuff:pBuffs) {
-			if (ev.hasPotionEffect(pBuff)) {
-				ev.removePotionEffect(pBuff);
-				break;
-			}
-		}
+		ev.setVelocity(v);
 	}
 	private static void Bleed(Player p, Plugin plugin) {
 		Empower(p, plugin, 3);	

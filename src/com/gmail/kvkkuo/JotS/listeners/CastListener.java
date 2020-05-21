@@ -118,22 +118,22 @@ public class CastListener implements Listener {
 			ChatColor g = ChatColor.GREEN;
 			String dispname = "";
 			if (faction == 0 && t.equals(Material.IRON_SWORD)) {
-				dispname = Duelist.skills[spl*8 + upg*2];
+				dispname = Duelist.SKILLS[spl*8 + upg*2];
 			}
 			if (faction == 1 && t.equals(Material.BLAZE_POWDER)) {
-				dispname = Raider.skills[spl*8 + upg*2];
+				dispname = Raider.SKILLS[spl*8 + upg*2];
 			}
 			if (faction == 2 && t.equals(Material.FEATHER)) {
-				dispname = Assassin.skills[spl*8 + upg*2];
+				dispname = Assassin.SKILLS[spl*8 + upg*2];
 			}
 			if (faction == 3 && t.equals(Material.CLAY_BALL)) {
-				dispname = Guardian.skills[spl*8 + upg*2];
+				dispname = Guardian.SKILLS[spl*8 + upg*2];
 			}
 			if (faction == 4 && i.getType().equals(Material.BONE)) {
-				dispname = Witherknight.skills[spl*8 + upg*2];
+				dispname = Witherknight.SKILLS[spl*8 + upg*2];
 			}
 			if (faction == 5 && t.equals(Material.GLOWSTONE_DUST)) {
-				dispname = Paladin.skills[spl*8 + upg*2];
+				dispname = Paladin.SKILLS[spl*8 + upg*2];
 			}
 			if (!dispname.equals("")) {
 				if (cd > 0) {

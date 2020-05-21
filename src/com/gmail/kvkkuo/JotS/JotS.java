@@ -6,6 +6,7 @@ import java.util.*;
 
 import com.gmail.kvkkuo.JotS.bosses.Boss;
 import com.gmail.kvkkuo.JotS.commands.BossCommand;
+import com.gmail.kvkkuo.JotS.commands.ParticleCommand;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,6 +55,8 @@ public class JotS extends JavaPlugin {
 	public HashMap<UUID, Integer[]> upgrades;
     @Override
     public void onEnable() {
+    	//
+		getCommand("particle").setExecutor(new ParticleCommand(this));
     	// Bosses
 		getServer().getPluginManager().registerEvents(bossDamage, this);
 		getCommand("boss").setExecutor(new BossCommand(this));

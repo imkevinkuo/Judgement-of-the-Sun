@@ -1,0 +1,20 @@
+# AoE,
+"Duskwave","After a delay, apply Wither and knock back enemies in a line."
+"Coldquake","After a delay, apply Wither and knock up enemies around you."
+"Arcnight","Shoot a bolt of energy that applies Wither and chains to nearby enemies."
+"Soulgrip","Pull in and apply Wither to all nearby enemies."
+# Passive,
+"Wither Barrier","Gain Resistance when enemies around you take Wither damage."
+"Wither Drain","Refill hunger when enemies around you take Wither damage."
+"Wither Wisp","Gain Speed when enemies around you take Wither damage."
+"Wither Rebirth","Heal when enemies around you take Wither damage."
+# AoE 2,
+"Specter Spear","Stab forward, applying Wither and Blindness to enemies in a line."
+"Skull Slash","Leap forward while shooting 2 Wither Skulls, then slash in a downward arc. Applies Wither."
+"Spirit Stab","Stab forward, applying Wither and Slowness to enemies in a line."
+"Soul Slice","Slash forward twice, then uppercut while jumping backwards. Applies Wither."
+# Trap,
+"Shadow Trap","Drops a trap that Poisons nearby enemies and teleports you behind them."
+"Shadow Curse","Drops a trap that applies Mining Fatigue to nearby enemies and teleports you behind them."
+"Shadow Snare","Drops a trap that Slows nearby enemies and teleports you behind them."
+"Shadow Shroud","Drops a trap that Blinds nearby enemies and teleports you behind them."

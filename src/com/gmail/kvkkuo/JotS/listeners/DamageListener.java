@@ -77,7 +77,7 @@ public class DamageListener implements Listener {
 		    				Duelist.applyCripple(ev);
 		    			}
 		    			else if (type == 2) {
-		    				Duelist.applyShatter(ev);
+		    				Duelist.applyShatter(ev, v.getLocation().subtract(d.getLocation()).toVector());
 		    			}
 		    			else if (type == 3) {
 		    				Duelist.applyBleed(ev, pd, plugin);
@@ -164,7 +164,7 @@ public class DamageListener implements Listener {
 					event.setDamage(0);
 				}
 			}
-			if (event.isCancelled() == false && p.hasMetadata("redemption") && event.getFinalDamage() > p.getHealth()) {
+			if (!event.isCancelled() && p.hasMetadata("redemption") && event.getFinalDamage() > p.getHealth()) {
 				event.setCancelled(true);
 				p.removeMetadata("redemption", plugin);
 				Paladin.Revive(p, plugin);

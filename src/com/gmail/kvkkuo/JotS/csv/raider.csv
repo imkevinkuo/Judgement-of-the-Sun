@@ -1,0 +1,20 @@
+# Fire,
+"Flame Shot","Shoot a fireball that explodes and sets enemies on fire."
+"Flame Breath","Unleash a short-range flame attack that Burns enemies."
+"Flame Focus","Shoot a tiny ray of fire that deals explosive damage at a fixed endpoint."
+"Flame Burst","Send forth a salvo of explosive missiles distributed among nearby enemies."
+# Potion,
+"Healing Balm","Apply a potion that heals some health and cures poison."
+"Blinding Brew","Throw several potions that impair foes' vision."
+"Frost Flask","Apply a potion that grants brief Fire Resistance and Speed."
+"Toxic Tonic","Throw several potions that Poison enemies around you."
+# Jump,
+"Blaze Leap","Leap into the air and create a trail of fire that burns enemies."
+"Blaze Smash","Leap into the air and burn enemies around you when you land."
+"Blaze Shells","Leap into the air and drop several firebombs onto enemies below."
+"Blaze Rocket","Slows you briefly, then launches you up with a huge explosion."
+# Whip,
+"Hooked Whip","Throw a whip that pulls an enemy towards you."
+"Singed Whip","Throw a whip that sets enemies on fire."
+"Spiked Whip","Throw a whip that stays on the floor and traps enemies."
+"Barbed Whip","Throw a whip that poisons enemies."

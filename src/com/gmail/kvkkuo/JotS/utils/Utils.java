@@ -1,8 +1,15 @@
 package com.gmail.kvkkuo.JotS.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.gmail.kvkkuo.JotS.classes.*;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -11,10 +18,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.BlockIterator;
 
-import com.gmail.kvkkuo.JotS.classes.Duelist;
 import org.bukkit.util.Vector;
 
 public class Utils {
+
+	public static String CSV_PATH = "/com/gmail/kvkkuo/JotS/csv/";
+
+	public static String[] readSkillsFromCSV(String fileName) {
+		String[] skills = new String[32];
+		int i = 0;
+
+		try (InputStream resource = Utils.class.getResourceAsStream(CSV_PATH + fileName)) {
+			List<String> doc = new BufferedReader(new InputStreamReader(resource,
+					StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
+
+			for (String line: doc) {
+				for (String token : line.split("(\",)?\"")) {
+					if (!token.isEmpty() && !token.startsWith("#")) {
+						skills[i++] = token;
+						System.out.println(token);
+					}
+				}
+			}
+
+		} catch (IOException ex) {
+			System.out.println("Could not find " + fileName);
+			ex.printStackTrace();
+		}
+
+		return skills;
+	}
 	
 	public static void clearMetadata(Player p, Plugin plugin) {
     	p.removeMetadata("nofall", plugin);

@@ -30,28 +30,7 @@ import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 
 public class Guardian {
-	public static String[] skills = new String[]{
-		// Shouts ---------------------------------------------------------------------------------------------
-		"Primal Howl", "A Wolf howl that Slows enemies around you.",
-		"Menacing Growl", "A Blaze growl that burns enemies around you.",
-		"Dragon Roar", "A Dragon roar that Weakens enemies around you.",
-		"Ender Call", "An Ender screech that scrambles enemies' locations.",
-		// Shield --------------------------------------------------------------------------------------------
-		"Spine Shield", "Summon an aura that partially reflects melee damage.",
-		"Spirit Shield", "Summon an aura that transfers damage to your hunger bar.",
-		"Kinetic Shield", "Summon an aura that stores damage to release in a shockwave.",
-		"Mirror Shield", "Summon an aura that reflects and blocks incoming projectiles.",
-		// Fist -------------------------------------------------------------------------------------------
-		"Crushing Fist", "Charges a shockwave that damages and slows enemies in a line.",
-		"Smashing Fist", "Charges a shockwave that damages and confuses enemies in a line.",
-		"Rending Fist",	"Charges a shockwave that damages and weakens all enemies in a line.",
-		"Pounding Fist", "Charges a shockwave that damages and knocks up all enemies in a line.",
-		// Totem -------------------------------------------------------------------------------------------
-		"Healing Totem", "Lay down a Totem that heals nearby players. Totems last for 10 seconds.",
-		"Cloaking Totem", "Lay down a Totem that grants Speed and Invisibility to nearby players.",
-		"Sating Totem", "Lay down a Totem that regenerates hunger of nearby players.",
-		"Blood Totem", "Lay down a Totem that grants Strength to nearby players."
-	};
+	public static String[] SKILLS = Utils.readSkillsFromCSV("guardian.csv");
 	
 	public static Integer cast(Player p, Integer spell, Integer cooldown, Integer upgrade, Plugin plugin) {
 		if (cooldown <= 0) {

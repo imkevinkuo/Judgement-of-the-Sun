@@ -10,7 +10,7 @@ import com.gmail.kvkkuo.JotS.classes.*;
 import com.gmail.kvkkuo.JotS.utils.IconMenu;
 
 public class UpgradeMenu {
-	static ItemStack[] assassinitems = new ItemStack[]{
+	static ItemStack[] assassinItems = new ItemStack[]{
 			new ItemStack(Material.QUARTZ),
 			new ItemStack(Material.STRING),
 			new ItemStack(Material.ARROW),
@@ -28,7 +28,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.LEAD),
 			new ItemStack(Material.GLASS_BOTTLE),
 	};
-	static ItemStack[] guardianitems = new ItemStack[]{
+	static ItemStack[] guardianItems = new ItemStack[]{
 			new ItemStack(Material.RABBIT_HIDE),
 			new ItemStack(Material.BLAZE_SPAWN_EGG),
 			new ItemStack(Material.GOLDEN_HORSE_ARMOR),
@@ -46,7 +46,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.WHEAT),
 			new ItemStack(Material.ROSE_BUSH)
 	};
-	static ItemStack[] raideritems = new ItemStack[]{
+	static ItemStack[] raiderItems = new ItemStack[]{
 			new ItemStack(Material.FIRE_CHARGE),
 			new ItemStack(Material.BLAZE_POWDER),
 			new ItemStack(Material.COMPARATOR),
@@ -64,7 +64,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.DEAD_BUSH),
 			new ItemStack(Material.NAME_TAG),
 	};	
-	static ItemStack[] paladinitems = new ItemStack[]{
+	static ItemStack[] paladinItems = new ItemStack[]{
 			new ItemStack(Material.GOLDEN_BOOTS),
 			new ItemStack(Material.GOLDEN_AXE),
 			new ItemStack(Material.GOLDEN_APPLE),
@@ -82,7 +82,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.MAGMA_CREAM),
 			new ItemStack(Material.REDSTONE),
 	};
-	static ItemStack[] witheritems = new ItemStack[]{
+	static ItemStack[] witherItems = new ItemStack[]{
 			new ItemStack(Material.SLIME_BLOCK),
 			new ItemStack(Material.MOSSY_COBBLESTONE),
 			new ItemStack(Material.TNT),
@@ -100,7 +100,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.IRON_BARS),
 			new ItemStack(Material.OBSIDIAN),
 	};
-	static ItemStack[] duelistitems = new ItemStack[]{
+	static ItemStack[] duelistItems = new ItemStack[]{
 			new ItemStack(Material.IRON_SHOVEL),
 			new ItemStack(Material.IRON_PICKAXE),
 			new ItemStack(Material.IRON_AXE),
@@ -118,9 +118,9 @@ public class UpgradeMenu {
 			new ItemStack(Material.PRISMARINE_CRYSTALS),
 			new ItemStack(Material.PRISMARINE_SHARD)
 	};
-	static ItemStack[][] items = new ItemStack[][]{duelistitems, raideritems, assassinitems, guardianitems, witheritems, paladinitems};
-	static String[][] skills = new String[][]{Duelist.skills, Raider.skills, Assassin.skills, Guardian.skills, Witherknight.skills, Paladin.skills};
-	
+	static ItemStack[][] items = new ItemStack[][]{duelistItems, raiderItems, assassinItems, guardianItems, witherItems, paladinItems};
+	static String[][] skills = new String[][]{Duelist.SKILLS, Raider.SKILLS, Assassin.SKILLS, Guardian.SKILLS, Witherknight.SKILLS, Paladin.SKILLS};
+
 	public static IconMenu DisplaySkills(IconMenu inv, Integer faction, Integer[] upgrades) {
 		String[] skilld = skills[faction];
 		ItemStack[] itemd = items[faction];

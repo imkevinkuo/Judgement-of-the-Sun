@@ -1,0 +1,20 @@
+# AoE,
+"Spearhead","Thrust forward, dealing damage and Slowing all enemies in a line."
+"Sideswipe","Swipe twice in a forward semicircle, damaging and throwing enemies to the side."
+"Axeheave","Channel briefly, then deal heavy damage and knock back enemies in a cone."
+"Bladereap","A triple combo attack that slashes forward, uppercuts, then slams enemies into the ground."
+# Buff,
+"Iron Will","Gain Resistance for 8 seconds."
+"Smoldering Rage","Consecutive melee attacks increase in damage. Failing to deal damage removes the buff."
+"Gilded Resolve","Gain an Absorption shield, increasing based on your missing health."
+"Tempered Fury","Melee attacks drain health from enemies, increasing based on your missing health."
+# Debuff,
+"Daze","Your next melee attack applies Blindness and Mining Fatigue."
+"Cripple","Your next melee attack applies Slowness."
+"Shatter","Your next melee attack applies increased knockback."
+"Bleed","Your next melee attack applies an unhealable bleed on your target."
+# Shield,
+"Spellward","Upon absorbing 3 magical attacks, gain a burst of Regeneration."
+"Spellblade","Upon absorbing 3 magical attacks, your next melee attack applies a hostile effect."
+"Spellbind","Upon absorbing 3 magical attacks, gain a large burst of Speed."
+"Spellthief","Upon absorbing 3 magical attacks, your next melee attack extends enemy cooldowns."

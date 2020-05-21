@@ -38,29 +38,7 @@ import com.gmail.kvkkuo.JotS.utils.Utils;
 import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
 
 public class Paladin {
-	public static String[] skills = new String[]{
-		// Buff --------------------------------------------------------------------------------------------------
-		"Haste", "Gain a brief burst of Speed. Paladin buffs last for 6 seconds.",
-		"Augment", "Gain Strength and brief Slowness.",
-		"Recovery", "Grants Regeneration and brief Blindness.",
-		"Redemption", "Upon death, you will revive and throw back all enemies.",
-		// Light -------------------------------------------------------------------------------------------------------
-		"Smite", "Rain down a bolt of light on a single target.",
-		"Judgement", "Throw all nearby airborne objects to the ground.",
-		"Arclight", "Fires a bolt of lightning that chains to nearby enemies.",
-		"Soulflare", "Conjure an aura of light that explodes after a short delay.",
-		// Ice ---------------------------------------------------------------------------------------------------
-		"Ice Spray", "Shoot two snowball barrages that slow down enemies.",
-		"Freezing Water", "Shoot a line of ice that briefly freezes enemies.",
-		"Suspension", "Immobilizes enemies in a sphere of water, dealing damage over time.",
-		"Glacial Guard", "Conjure a shield of ice that absorbs melee, explosive, and fire damage.",
-		// Fire ---------------------------------------------------------------------------------------------------
-		"Holy Fire", "Shoots two fireball barrages that burn enemies.",
-		"Purifying Fire", "Self-cleanse all debuffs and ignite everyone around you.",
-		"Inferno", "Conjure a dome of flame that forces away those who touch it.",
-		"Divine Fire", "Conjure a shield of fire that burns attackers."
-	};
-	
+	public static String[] SKILLS = Utils.readSkillsFromCSV("paladin.csv");
 	private static BlockData icedata = Material.ICE.createBlockData();
 	private static BlockData firedata = Material.FIRE.createBlockData();
 	public static HashMap<UUID, Stack<Item>> guards = new HashMap<UUID, Stack<Item>>();
@@ -187,7 +165,7 @@ public class Paladin {
 		});
 	}
 	public static void Arclight(Player p, Plugin plugin) {
-		ArrayList<LivingEntity> affected = new ArrayList<LivingEntity>();
+		ArrayList<LivingEntity> affected = new ArrayList<>();
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1, 1);
 		affected.add(p);
 		Archelper(p, affected, new RayTrace(p, 6, 1), plugin);

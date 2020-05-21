@@ -1,0 +1,20 @@
+# Projectile,
+"Smoke Bomb","Throw a bomb that explodes into a cloud of Blinding powder."
+"Webbing Spray","Shoot several strands of string that Slow enemies down."
+"Arrow Spray","Shoot a flurry of arrows."
+"Kinetic Bomb","Throw a bomb that flings enemies away from the explosion."
+# Dash,
+"Blade Rush","Dash forward in a straight line and slice through your enemies."
+"Blade Mist","Hitting an enemy with Blade Rush will grant Stealth for 2 seconds."
+"Blade Whirlwind","Hitting an enemy with Blade Rush throws them into the air."
+"Blade Lightning","Hitting an enemy with Blade Rush also damages up to 5 nearby enemies."
+# Stealth,
+"Shade Stealth","Gain Stealth for 4 seconds. Attacks reveal Stealth and apply Poison."
+"Shade Illusion","Upon being attacked, blind nearby enemies and Stealth for 4 seconds."
+"Shade Deception","Upon being attacked, confuse nearby enemies and Stealth for 4 seconds."
+"Shade Mirage","Stealth for 2 seconds, on short cooldown. The third cast has a much larger cooldown."
+# Blink,
+"Umbra Shift","Teleport behind the target your crosshair is pointing at."
+"Umbra Mark","Mark your position and return to it later by casting again while within 20 blocks."
+"Umbra Bind","Bind to a target for 8 seconds, and automatically blink to them when farther than 5 blocks away."
+"Umbra Soul","For 3 seconds, you are unable to attack but gain Speed and dodge all enemy melee attacks."
