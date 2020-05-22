@@ -1,5 +1,6 @@
 package com.gmail.kvkkuo.JotS.classes;
 
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect.Type;
@@ -20,7 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
-import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.util.Vector;
 
@@ -93,7 +93,7 @@ public class Witherknight {
 	}
 
 	public static void Duskwave(Player p, Plugin pl) {
-
+		
 	}
 
 	public static void Coldquake(Player p, Plugin plugin) {

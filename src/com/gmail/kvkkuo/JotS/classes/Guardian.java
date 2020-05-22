@@ -3,6 +3,7 @@ package com.gmail.kvkkuo.JotS.classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Effect;
@@ -26,7 +27,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
-import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 
 public class Guardian {

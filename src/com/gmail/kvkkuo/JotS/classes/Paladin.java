@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.UUID;
 
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -33,9 +34,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
-import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
-import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
+import com.gmail.kvkkuo.JotS.utils.Geometry.Plane;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
 
 public class Paladin {
 	public static String[] SKILLS = Utils.readSkillsFromCSV("paladin.csv");
@@ -112,7 +113,7 @@ public class Paladin {
 	}
 	
 	public static boolean Smite(Player p, Plugin plugin) {
-		LivingEntity target = Utils.getCrosshair(p);
+		LivingEntity target = Geometry.getCrosshair(p);
 		if (target != null && target.getLocation().distance(p.getLocation()) < 10) {
 			Location end = target.getLocation();
 			Location start = p.getLocation().add(
@@ -220,7 +221,7 @@ public class Paladin {
 				@Override
 				public void run() {
 					double t = (double) item.getTicksLived();
-					Location to = Utils.getCirclePoint(p.getLocation().add(0,h,0), 3, (Math.PI*in*2/5) + Math.pow(t, 1.7)/80);
+					Location to = Geometry.getCirclePoint(p.getLocation().add(0,h,0), 3, (Math.PI*in*2/5) + Math.pow(t, 1.7)/80);
 					Location from = item.getLocation();
 					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
 					if (t%8 == 0) {
@@ -309,7 +310,7 @@ public class Paladin {
 		}
 	}
 	public static boolean Suspension(Player p, Plugin plugin) {
-		LivingEntity target = Utils.getCrosshair(p);
+		LivingEntity target = Geometry.getCrosshair(p);
 		if (target != null && target.getLocation().distance(p.getLocation()) < 10) {
 			World w = p.getWorld();
 			Vector v = new Vector(0, target.getEyeHeight()/2, 0);
@@ -354,7 +355,7 @@ public class Paladin {
 				@Override
 				public void run() {
 					Location center = target.getLocation().add(v);
-					for (Location l:Utils.getSpherePoints(center, 2, 19, 21)) {
+					for (Location l:Geometry.getSpherePoints(center, 2, 19, 21)) {
 						w.spawnParticle(Particle.WATER_WAKE, l, 1, 0, 0, 0, 0);
 					}
 				}
@@ -367,7 +368,7 @@ public class Paladin {
 						double phiMax = Math.PI*((j/9)-0.9);
 						Location center = target.getLocation().add(v);
 						w.spawnParticle(Particle.WATER_WAKE, center, 1, 1, 1, 1, 0.2);
-						for (Location l:Utils.getSpherePoints(center, (float) 2, 
+						for (Location l:Geometry.getSpherePoints(center, (float) 2,
 								(int) j*2 + 1, -Math.PI, phiMax, 
 								(int) j*2 + 3, (double) 0, 2*Math.PI)) {
 							w.spawnParticle(Particle.WATER_DROP, l, 1, 0, 0, 0, 1);
@@ -400,7 +401,7 @@ public class Paladin {
 				@Override
 				public void run() {
 					if (item.isDead()) {this.cancel();}
-					Location to = Utils.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/5) + (double) item.getTicksLived()/12);
+					Location to = Geometry.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/5) + (double) item.getTicksLived()/12);
 					Location from = item.getLocation();
 					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
 				}
@@ -476,7 +477,7 @@ public class Paladin {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					for (Location l:Utils.getCirclePoints(p.getLocation().add(0, 0.3, 0), Plane.XZ, in, 8*in+1)) {
+					for (Location l:Geometry.getCirclePoints(p.getLocation().add(0, 0.3, 0), Plane.XZ, in, 8*in+1)) {
 						p.getWorld().spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0.1);
 					}
 				}
@@ -497,12 +498,12 @@ public class Paladin {
 				public void run() {
 					double hiPhiTop = Math.PI/2 - phiInterval*in;
 					double loPhiTop = Math.PI/2 - phiInterval*(in+1);
-					for (Location l:Utils.getSpherePoints(center, 8, 3, loPhiTop, hiPhiTop, 32, 0, Math.PI*2)) {
+					for (Location l:Geometry.getSpherePoints(center, 8, 3, loPhiTop, hiPhiTop, 32, 0, Math.PI*2)) {
 						w.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 					}
 					double loPhiBot = Math.PI/2 + phiInterval*in;
 					double hiPhiBot = Math.PI/2 + phiInterval*(in+1);
-					for (Location l:Utils.getSpherePoints(center, 8, 3, loPhiBot, hiPhiBot, 32, 0, Math.PI*2)) {
+					for (Location l:Geometry.getSpherePoints(center, 8, 3, loPhiBot, hiPhiBot, 32, 0, Math.PI*2)) {
 						w.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 					}
 				}
@@ -512,7 +513,7 @@ public class Paladin {
 		BukkitTask bt = new BukkitRunnable() {
 			@Override
 			public void run() {
-				for (Location l:Utils.getSpherePoints(center, 8, 23, 32)) {
+				for (Location l:Geometry.getSpherePoints(center, 8, 23, 32)) {
 					w.spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 				}
 			}
@@ -565,7 +566,7 @@ public class Paladin {
 				@Override
 				public void run() {
 					if (item.isDead()) {this.cancel();}
-					Location to = Utils.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/5) + (double) item.getTicksLived()/12);
+					Location to = Geometry.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/5) + (double) item.getTicksLived()/12);
 					Location from = item.getLocation();
 					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
 				}

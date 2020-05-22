@@ -1,6 +1,7 @@
 package com.gmail.kvkkuo.JotS.bosses;
 
 import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.*;
@@ -16,7 +17,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Hunter extends Boss {
@@ -137,7 +137,7 @@ public class Hunter extends Boss {
 			public void run() {
 				boss.getWorld().playSound(boss.getLocation(), Sound.ENTITY_WITHER_SHOOT, 10, 1);
 				for (int radius = 1; radius < 5; radius++) {
-					List<Location> points = Utils.getCirclePoints(boss.getEyeLocation(), Utils.Plane.XZ, radius, radius*6);
+					List<Location> points = Geometry.getCirclePoints(boss.getEyeLocation(), Geometry.Plane.XZ, radius, radius*6);
 					int count = 1;
 					for (Location loc : points) {
 						count++;
@@ -194,7 +194,7 @@ public class Hunter extends Boss {
 						    for (int angle : angles) {
 							    Vector vec;
 							    if (angle != 0) {
-							        vec = Utils.rotateYAxis(dirY, angle);
+							        vec = Geometry.rotateYAxis(dirY, angle);
 							        vec.multiply(Math.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ())).subtract(dirY);
 							        vec = direction.clone().add(vec).normalize();
 							    } else {
@@ -283,7 +283,7 @@ public class Hunter extends Boss {
 					BukkitTask bt = new BukkitRunnable() {
 						@Override
 						public void run() {
-						for (Location loca:Utils.getCirclePoints(item.getLocation(), Utils.Plane.XZ, 5, 100)) {
+						for (Location loca:Geometry.getCirclePoints(item.getLocation(), Geometry.Plane.XZ, 5, 100)) {
 							Location newloc = loca.clone();
 							Location below = loca.add(0, -1, 0);
 							while (below.getBlock().isPassable()) {
@@ -350,7 +350,7 @@ public class Hunter extends Boss {
 		// Charging
 		boss.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 8));
 		Location cp = boss.getLocation().subtract(0, 1, 0);
-		List<Location> circle = Utils.getCirclePoints(cp, Utils.Plane.XZ, 2);
+		List<Location> circle = Geometry.getCirclePoints(cp, Geometry.Plane.XZ, 2);
 		Boss.Ready(boss, 30, Particle.REDSTONE, plugin);
 		// Spawn Wolves
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

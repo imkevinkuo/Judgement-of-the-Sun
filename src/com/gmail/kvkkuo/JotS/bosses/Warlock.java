@@ -1,5 +1,6 @@
 package com.gmail.kvkkuo.JotS.bosses;
 
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -110,7 +111,7 @@ public class Warlock extends Boss {
 							Integer live = item.getTicksLived();
 							Double d = (double) (live/4);
 							Integer rn = (int) Math.ceil(d);
-							item.setVelocity(Utils.getSquareLocation(Utils.getBlockRelative(boss.getEyeLocation(), 0, 0, 4), cn, rn, 3).toVector().subtract(item.getLocation().toVector()).multiply(0.2));
+							item.setVelocity(Geometry.getSquareLocation(Geometry.getBlockRelative(boss.getEyeLocation(), 0, 0, 4), cn, rn, 3).toVector().subtract(item.getLocation().toVector()).multiply(0.2));
 						}
 					}.runTaskTimer(plugin, 4, 1);
 					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -149,7 +150,7 @@ public class Warlock extends Boss {
 			ItemMeta im = is.getItemMeta();
 			im.setDisplayName("skbone" + rn);
 			is.setItemMeta(im);
-			Item item = sk.getWorld().dropItem(Utils.getSquareLocation(sk.getEyeLocation(), rn, 0, 2), is);
+			Item item = sk.getWorld().dropItem(Geometry.getSquareLocation(sk.getEyeLocation(), rn, 0, 2), is);
 			item.setPickupDelay(Integer.MAX_VALUE);
 			item.setVelocity(new Vector(0, 0.2, 0));
 			new BukkitRunnable() {
@@ -159,7 +160,7 @@ public class Warlock extends Boss {
 						Integer pre = item.getTicksLived();
 						Double d = (double) (pre/4);
 						Integer lived = (int) Math.ceil(d);
-						item.setVelocity(Utils.getSquareLocation(sk.getEyeLocation(), rn, lived, 2).toVector().subtract(item.getLocation().toVector()).multiply(0.2).add(new Vector(0, 0.1, 0)));
+						item.setVelocity(Geometry.getSquareLocation(sk.getEyeLocation(), rn, lived, 2).toVector().subtract(item.getLocation().toVector()).multiply(0.2).add(new Vector(0, 0.1, 0)));
 					}
 					else {
 						sk.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, item.getLocation(), 4, 1, 1, 1);
@@ -269,7 +270,7 @@ public class Warlock extends Boss {
 				public void run() {
 				    Vector vec;
 				    if (angle != 0) {
-				        vec = Utils.rotateYAxis(dirY, angle);
+				        vec = Geometry.rotateYAxis(dirY, angle);
 				        vec.multiply(Math.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ())).subtract(dirY);
 				        vec = direction.clone().add(vec).normalize();
 				    } else {
@@ -299,7 +300,7 @@ public class Warlock extends Boss {
 				boss.getWorld().spawnParticle(Particle.SMOKE_NORMAL, e.getLocation(), 4, 0, 0, 0);
 				Arrow a = boss.launchProjectile(Arrow.class);
 			    a.setShooter(boss);
-			    a.teleport(Utils.getBlockRelative(e.getLocation(), 0, 0, 1));
+			    a.teleport(Geometry.getBlockRelative(e.getLocation(), 0, 0, 1));
 			    e.remove();
 				count++;
 				a.setVelocity(new Vector(0, 0.8, 0));

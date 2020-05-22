@@ -2,6 +2,7 @@ package com.gmail.kvkkuo.JotS.commands;
 
 import com.gmail.kvkkuo.JotS.JotS;
 import com.gmail.kvkkuo.JotS.bosses.*;
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,7 +32,7 @@ public class ParticleCommand implements CommandExecutor {
 				if (sender instanceof Player) {
 					Player p = (Player) sender;
 					Particle particle = Particle.valueOf(args[0]);
-					Location location = Utils.getBlockRelative(p.getEyeLocation(), 2, 0, 0);
+					Location location = Geometry.getBlockRelative(p.getEyeLocation(), 2, 0, 0);
 					int count = Integer.parseInt(args[1]);
 					double offsetX = Double.parseDouble(args[2]);
 					double offsetY = Double.parseDouble(args[3]);

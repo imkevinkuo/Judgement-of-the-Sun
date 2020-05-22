@@ -2,6 +2,7 @@ package com.gmail.kvkkuo.JotS.commands;
 
 import com.gmail.kvkkuo.JotS.JotS;
 import com.gmail.kvkkuo.JotS.bosses.*;
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -52,22 +53,22 @@ public class BossCommand implements CommandExecutor {
 							if (Arrays.asList(new String[] {"marauder", "shaman", "rogue", "warlock", "hunter", "ninja"}).contains(arg2)) {
 								failure = false;
 								if (arg2.equals("marauder")) {
-									Marauder.Spawn(Utils.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
+									Marauder.Spawn(Geometry.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
 								}
 								if (arg2.equals("shaman")) {
-									Shaman.Spawn(Utils.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
+									Shaman.Spawn(Geometry.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
 								}
 								if (arg2.equals("rogue")) {
-									Rogue.Spawn(Utils.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
+									Rogue.Spawn(Geometry.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
 								}
 								if (arg2.equals("warlock")) {
-									Warlock.Spawn(Utils.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
+									Warlock.Spawn(Geometry.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
 								}
 								if (arg2.equals("hunter")) {
-									Hunter.Spawn(Utils.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
+									Hunter.Spawn(Geometry.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
 								}
 								if (arg2.equals("ninja")) {
-									Ninja.Spawn(Utils.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
+									Ninja.Spawn(Geometry.getBlockRelative(p.getLocation(), 6, 0, 0), plugin, et);
 								}
 							}
 						}

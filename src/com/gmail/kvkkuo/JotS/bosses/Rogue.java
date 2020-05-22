@@ -1,6 +1,7 @@
 package com.gmail.kvkkuo.JotS.bosses;
 
 import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -141,7 +142,7 @@ public class Rogue extends Boss {
     
     public static void Step(LivingEntity boss, Player p, Plugin plugin) {
     	FireworkPlayer.fire(boss.getLocation(), Type.BURST, Color.BLACK, true);
-		Location l = Utils.getBlockRelative(p.getLocation(), -5, 0, 0);
+		Location l = Geometry.getBlockRelative(p.getLocation(), -5, 0, 0);
 		while (!l.getBlock().isPassable()) {
 			l.setY(l.getY() + 1);
 		}

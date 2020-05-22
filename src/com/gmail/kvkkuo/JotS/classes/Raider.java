@@ -2,6 +2,8 @@ package com.gmail.kvkkuo.JotS.classes;
 
 import java.util.ArrayList;
 
+import com.gmail.kvkkuo.JotS.utils.Geometry;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -28,9 +30,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
-import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
+import com.gmail.kvkkuo.JotS.utils.Geometry.Plane;
 
 public class Raider {
 	public static String[] SKILLS = Utils.readSkillsFromCSV("raider.csv");
@@ -187,7 +188,7 @@ public class Raider {
 			BukkitTask bt = new BukkitRunnable() {
 				@Override
 				public void run() {
-					Location to = Utils.getCirclePoint(p.getEyeLocation(), 1.5, (Math.PI*in*2/6) - (double) item.getTicksLived()/5);
+					Location to = Geometry.getCirclePoint(p.getEyeLocation(), 1.5, (Math.PI*in*2/6) - (double) item.getTicksLived()/5);
 					Location from = item.getLocation();
 					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
 				}
@@ -322,7 +323,7 @@ public class Raider {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					for (Location l:Utils.getCirclePoints(p.getLocation(), Plane.XZ, r2, 6*r2 + 2)) {
+					for (Location l:Geometry.getCirclePoints(p.getLocation(), Plane.XZ, r2, 6*r2 + 2)) {
 						p.getWorld().spawnParticle(Particle.FLAME, l, 1, 0, 0, 0, 0);
 					}
 				}

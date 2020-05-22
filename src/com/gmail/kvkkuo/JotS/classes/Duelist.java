@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.UUID;
 
+import com.gmail.kvkkuo.JotS.utils.Geometry;
+import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import org.bukkit.*;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.data.BlockData;
@@ -24,9 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
-import com.gmail.kvkkuo.JotS.utils.Utils.Plane;
 
 public class Duelist {
 	public static String[] SKILLS = Utils.readSkillsFromCSV("duelist.csv");
@@ -224,7 +224,7 @@ public class Duelist {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					Utils.applyNearby(l, p, c, 1, c, (LivingEntity le) -> {	
+					Utils.applyNearby(l, p, c, 1, c, (LivingEntity le) -> {
 						le.damage(2,p); 
 					});
 					int z = 0;
@@ -249,7 +249,7 @@ public class Duelist {
 					}
 				}
 			}.runTaskLater(plugin, (count/3)*5 + 10);
-		}	
+		}
 	}
 	private static void Bladereap(Player p, Plugin plugin) {
 		World w = p.getWorld();
@@ -303,7 +303,7 @@ public class Duelist {
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							for (Location cLoc:Utils.getCirclePoints(p.getLocation(), Utils.Plane.XZ, 2, 30)) {
+							for (Location cLoc: Geometry.getCirclePoints(p.getLocation(), Geometry.Plane.XZ, 2, 30)) {
 								w.spawnParticle(Particle.CRIT, cLoc, 1, 0, 0, 0, 0);
 							}
 						}
@@ -397,7 +397,7 @@ public class Duelist {
 		Empower(p, plugin, 0);
 	}
 	public static void applyDaze(LivingEntity ev) {
-		for (Location l:Utils.getCirclePoints(ev.getEyeLocation(), Plane.XZ, 1, 8)) {
+		for (Location l:Geometry.getCirclePoints(ev.getEyeLocation(), Geometry.Plane.XZ, 1, 8)) {
 			ev.getWorld().spawnParticle(Particle.NOTE, l, 1, 0, 0, 0, 0.2);
 		}
 		ev.addPotionEffect(dazeEffect1);
@@ -455,7 +455,7 @@ public class Duelist {
 				@Override
 				public void run() {
 					if (item.isDead()) {this.cancel();}
-					Location to = Utils.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/3) + (double) item.getTicksLived()/12);
+					Location to = Geometry.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/3) + (double) item.getTicksLived()/12);
 					Location from = item.getLocation();
 					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
 				}

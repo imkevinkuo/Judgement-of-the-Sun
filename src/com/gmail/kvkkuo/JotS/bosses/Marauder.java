@@ -1,5 +1,6 @@
 package com.gmail.kvkkuo.JotS.bosses;
 
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -88,7 +89,7 @@ public class Marauder extends Boss {
 									Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 										public void run() {
 											boss.getWorld().playSound(boss.getLocation(), Sound.BLOCK_GRASS_BREAK, 2, 1);
-											for (Location loca:Utils.getCirclePoints(boss.getLocation(), Utils.Plane.XZ, in, in*20)) {
+											for (Location loca: Geometry.getCirclePoints(boss.getLocation(), Geometry.Plane.XZ, in, in*20)) {
 												Location newloc = loca.clone();
 												Location below = loca.add(0, -1, 0);
 												while (below.getBlock().isPassable()) {
@@ -133,7 +134,7 @@ public class Marauder extends Boss {
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					boss.getWorld().playSound(boss.getLocation(), Sound.BLOCK_GRASS_BREAK, 2, 1);
-					for (Location loca:Utils.getCirclePoints(boss.getLocation(), Utils.Plane.XZ, 3)) {
+					for (Location loca:Geometry.getCirclePoints(boss.getLocation(), Geometry.Plane.XZ, 3)) {
 						boss.getWorld().spawnParticle(Particle.BLOCK_CRACK, loca, 1, 0, 1, 0, 1, Material.DIRT.createBlockData());
 					}
 					Utils.applyNearbyPlayers(boss.getLocation(),  3, (LivingEntity le) -> {
@@ -153,7 +154,7 @@ public class Marauder extends Boss {
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
 					boss.getWorld().playSound(boss.getLocation(), Sound.BLOCK_GRASS_BREAK, 2, 1);
-					for (Location loca:Utils.getCirclePoints(boss.getLocation(), Utils.Plane.XZ, ii*2)) {
+					for (Location loca:Geometry.getCirclePoints(boss.getLocation(), Geometry.Plane.XZ, ii*2)) {
 						boss.getWorld().spawnParticle(Particle.BLOCK_CRACK, loca, 1, 0, 1, 0, 1, Material.DIRT.createBlockData());
 					}
 				}

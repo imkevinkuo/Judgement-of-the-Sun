@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -90,7 +91,7 @@ public class Assassin {
 					}
 				}
 				if (upgrade.equals(2)) {
-					Assassin.Bind(p, plugin);
+					c = Assassin.Bind(p, plugin);
 				}
 				if (upgrade.equals(3)) {
 					Assassin.Soul(p, plugin);
@@ -292,7 +293,7 @@ public class Assassin {
 		p.setMetadata("illusion", new FixedMetadataValue(plugin, true));
 		BlockData md = Material.OAK_WOOD.createBlockData();
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1, 1);
-		for (Location loc: Utils.getCirclePoints(p.getLocation(), Utils.Plane.XZ, 2, 20)) {
+		for (Location loc: Geometry.getCirclePoints(p.getLocation(), Geometry.Plane.XZ, 2, 20)) {
 			p.getWorld().spawnParticle(Particle.BLOCK_CRACK, loc, 1, 0, 0, 0, 1, md);
 		}
 		new BukkitRunnable() {
@@ -310,7 +311,7 @@ public class Assassin {
 	public static void Deception(Player p, Plugin plugin) {
 		p.setMetadata("deception", new FixedMetadataValue(plugin, true));
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
-		for (Location loc: Utils.getCirclePoints(p.getLocation(), Utils.Plane.XZ, 2, 20)) {
+		for (Location loc: Geometry.getCirclePoints(p.getLocation(), Geometry.Plane.XZ, 2, 20)) {
 			BlockData md = Material.STONE.createBlockData();
 			p.getWorld().spawnParticle(Particle.BLOCK_CRACK, loc, 1, 0, 0, 0, 1, md);
 		}
@@ -342,7 +343,7 @@ public class Assassin {
 	}
 	
 	public static boolean Shift(Player p) {
-		LivingEntity le = Utils.getCrosshair(p);
+		LivingEntity le = Geometry.getCrosshair(p);
 		if (le != null) {
 			Location ebe = le.getLocation().add(le.getLocation().getDirection().setY(0).multiply(-1).normalize());
 			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
@@ -378,7 +379,7 @@ public class Assassin {
 		return false;
 	}
 	public static boolean Bind(Player p, Plugin plugin) {
-		Entity e = Utils.getCrosshair(p);
+		Entity e = Geometry.getCrosshair(p);
 		if (e != null) {
 			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
 			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);

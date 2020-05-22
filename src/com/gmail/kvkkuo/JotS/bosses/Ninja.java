@@ -1,6 +1,7 @@
 package com.gmail.kvkkuo.JotS.bosses;
 
 import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.*;
@@ -19,7 +20,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -92,8 +92,8 @@ public class Ninja extends Boss {
 			int in = i + 2;
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
-					boss.getWorld().playSound(Utils.getBlockRelative(boss.getLocation(), 1, 0, 0), Sound.BLOCK_IRON_TRAPDOOR_CLOSE, 10, 1);
-					for (Location l : Utils.getCirclePoints(bodyLocation(boss), Utils.Plane.XZ, in, (in * 5) + 4)) {
+					boss.getWorld().playSound(Geometry.getBlockRelative(boss.getLocation(), 1, 0, 0), Sound.BLOCK_IRON_TRAPDOOR_CLOSE, 10, 1);
+					for (Location l : Geometry.getCirclePoints(bodyLocation(boss), Geometry.Plane.XZ, in, (in * 5) + 4)) {
 						boss.getWorld().spawnParticle(Particle.SMOKE_NORMAL, l, 1, 0, 0, 0, 0);
 					}
 					if (in == 4) {
@@ -160,7 +160,7 @@ public class Ninja extends Boss {
 	    for (int angle : angles) {
 		    Vector vec;
 		    if (angle != 0) {
-		        vec = Utils.rotateYAxis(dirY, angle);
+		        vec = Geometry.rotateYAxis(dirY, angle);
 		        vec.multiply(Math.sqrt(vec.getX() * vec.getX() + vec.getZ() * vec.getZ())).subtract(dirY);
 		        vec = direction.clone().add(vec).normalize();
 		    } else {
@@ -287,7 +287,7 @@ public class Ninja extends Boss {
 									s = s * -1;
 								}
 								b = (int) (Math.random() + 0.8) * (-2);
-								Location l = Utils.getBlockRelative(boss.getLocation(), b, s, 0);
+								Location l = Geometry.getBlockRelative(boss.getLocation(), b, s, 0);
 								while (!l.getBlock().isPassable()) {
 									l.add(new Vector(0, 1, 0));
 								}
