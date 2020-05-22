@@ -1,8 +1,8 @@
 # AoE,
 "Duskwave","Sends forth a shockwave that applies Wither to enemies in a cone."
-"Coldquake","Apply Wither and send enemies airborne in an area around you."
-"Arcnight","Shoot a bolt of energy that applies Wither and chains to nearby enemies."
-"Soulgrip","Pull in and apply Wither to all nearby enemies."
+"Coldburst","Apply Wither and send enemies airborne in an area around you."
+"Arcwither","Shoot a bolt of energy that applies Wither and chains to nearby enemies."
+"Nightfall","Pull in and apply Wither to all nearby enemies."
 # Passive,
 "Wither Barrier","Gain Resistance when enemies around you take Wither damage."
 "Wither Drain","Refill hunger when enemies around you take Wither damage."

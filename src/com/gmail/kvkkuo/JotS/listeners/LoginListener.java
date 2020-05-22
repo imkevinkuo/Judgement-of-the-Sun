@@ -40,7 +40,7 @@ public class LoginListener implements Listener {
 			UUID id1 = p1.getUniqueId();
 			// Shard to be equipped
 			ItemStack i = p1.getInventory().getItemInMainHand();
-			Integer s = event1.getPosition();
+			int s = event1.getPosition();
 			//Unequip all
 			if (s == 8) {
 				Integer[] ups = plugin.upgrades.get(id1);
@@ -96,7 +96,6 @@ public class LoginListener implements Listener {
     
     @EventHandler
 	public void onPlayerKicked(PlayerKickEvent event) {
-		Player p = event.getPlayer();
-		plugin.leaveServer(p);
+		plugin.leaveServer(event.getPlayer());
 	}
 }

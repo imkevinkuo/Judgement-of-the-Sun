@@ -29,15 +29,6 @@ public class CastListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	public static Material[] castItems = new Material[]{
-			Material.IRON_SWORD,
-			Material.BLAZE_POWDER,
-			Material.FEATHER,
-			Material.CLAY_BALL,
-			Material.BONE,
-			Material.GLOWSTONE_DUST
-	};
-
     @EventHandler
     public void onInteractEvent(PlayerInteractEvent event) {
     	Player p = event.getPlayer();
@@ -50,18 +41,24 @@ public class CastListener implements Listener {
 		// Casting Spells
 	    if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
 	    	for (int i = 0; i < 6; i++) {
-				if (faction == i && m.equals(castItems[i])) {
+				if (faction == i && m.equals(JotS.selectors[i])) {
 					if (p.hasMetadata("silenced")) {
 						p.sendMessage("You cannot cast spells while Silenced!");
 						return;
 					}
 					switch (faction) {
 						case 0: cds[spl] = Duelist.cast(p, spl, cds[spl], ups[spl], plugin);
+								break;
 						case 1: cds[spl] = Raider.cast(p, spl, cds[spl], ups[spl], plugin);
+								break;
 						case 2: cds[spl] = Assassin.cast(p, spl, cds[spl], ups[spl], plugin);
+								break;
 						case 3: cds[spl] = Guardian.cast(p, spl, cds[spl], ups[spl], plugin);
+								break;
 						case 4: cds[spl] = Witherknight.cast(p, spl, cds[spl], ups[spl], plugin);
+								break;
 						case 5: cds[spl] = Paladin.cast(p, spl, cds[spl], ups[spl], plugin);
+								break;
 					}
 				}
 			}
@@ -70,7 +67,7 @@ public class CastListener implements Listener {
 	    if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
 	    	// Class Spell Cycling
 			for (int i = 0; i < 6; i++) {
-				if (faction == i && m.equals(castItems[i])) {
+				if (faction == i && m.equals(JotS.selectors[i])) {
 					spl = (spl+1)%4;
 				}
 			}
@@ -88,14 +85,20 @@ public class CastListener implements Listener {
 			ChatColor g = ChatColor.GREEN;
 			String dispname = "";
 			for (int i = 0; i < 6; i++) {
-				if (faction == i && m.equals(castItems[i])) {
+				if (faction == i && m.equals(JotS.selectors[i])) {
 					switch (faction) {
 						case 0: dispname = Duelist.SKILLS[spl*8 + upg*2];
+								break;
 						case 1: dispname = Raider.SKILLS[spl*8 + upg*2];
+								break;
 						case 2: dispname = Assassin.SKILLS[spl*8 + upg*2];
+								break;
 						case 3: dispname = Guardian.SKILLS[spl*8 + upg*2];
+								break;
 						case 4: dispname = Witherknight.SKILLS[spl*8 + upg*2];
+								break;
 						case 5: dispname = Paladin.SKILLS[spl*8 + upg*2];
+								break;
 					}
 				}
 			}

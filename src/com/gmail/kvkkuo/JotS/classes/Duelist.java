@@ -214,38 +214,24 @@ public class Duelist {
 			}
 		}.runTaskLater(plugin, 10);
 		
-		Integer range = 9, count = 0, magnitude = 1;
+		int range = 9, count = 0, magnitude = 1;
 		Vector dir = p.getLocation().getDirection().setY(0).normalize().multiply(0.8);
-		Vector norm = new Vector(-dir.getZ(), 0, dir.getX()); // need for cone abilities
 		RayTrace eye = new RayTrace(p.getLocation(), dir, range, magnitude);
 		for (count = 0; count < range; count+=magnitude) {
-			Location l = eye.next().clone();
+			Location center = eye.next().clone();
 			Integer c = count;
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					Utils.applyNearby(l, p, c, 1, c, (LivingEntity le) -> {
+					Utils.applyNearby(center, p, c, 1, c, (LivingEntity le) -> {
 						le.damage(2,p); 
 					});
-					int z = 0;
-					while (z < 6 && l.getBlock().getType().equals(Material.AIR)) {
-						l.add(0,-1,0);
+					Location groundLoc = Geometry.getGroundLocation(center, 6);
+					if (c%3 == 0) {
+						w.playSound(groundLoc, Sound.BLOCK_WOOD_BREAK, 1, 1);
 					}
-					while (!l.getBlock().getType().equals(Material.AIR)) {
-						l.add(0,1,0);
-					}
-					if (z < 6) {
-						if (c%3 == 0) {
-							w.playSound(l, Sound.BLOCK_WOOD_BREAK, 1, 1);
-						}
-						l.add(0,0.1,0);
+					for (Location l: Geometry.getPerpendicularLine(groundLoc, dir, c)) {
 						p.getWorld().spawnParticle(Particle.BLOCK_CRACK, l, 2, 0, 0, 0, 0, md);
-						Location sideA = l.clone();
-						Location sideB = l.clone();
-						for (int i = 0; i < c; i++) {
-							p.getWorld().spawnParticle(Particle.BLOCK_CRACK, sideA.add(norm), 2, 0, 0, 0, 0, md);
-							p.getWorld().spawnParticle(Particle.BLOCK_CRACK, sideB.subtract(norm), 2, 0, 0, 0, 0, md);
-						}
 					}
 				}
 			}.runTaskLater(plugin, (count/3)*5 + 10);

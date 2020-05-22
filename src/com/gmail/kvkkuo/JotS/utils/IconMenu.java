@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -61,7 +62,7 @@ public class IconMenu implements Listener {
    
     @EventHandler
     void onInventoryClick(InventoryClickEvent event) {
-        if (!event.getInventory().getHolder().equals(this)) {
+        if (event.getInventory().getSize() != 9 || !event.getInventory().getType().equals(InventoryType.CHEST)) {
             return;
         }
         event.setCancelled(true);

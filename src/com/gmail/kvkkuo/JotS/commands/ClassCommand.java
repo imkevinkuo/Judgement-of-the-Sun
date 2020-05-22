@@ -87,9 +87,7 @@ public class ClassCommand implements CommandExecutor {
 						if (arg2 >= 0 && arg2 < 6) {
 							p.sendMessage("You are now a " + JotS.classNames[arg2] + ".");
 							plugin.factions.put(p.getUniqueId(), arg2);
-							if (arg2 >= 0) {
-								p.getInventory().addItem(new ItemStack(JotS.selectors[arg2], 1));
-							}
+							p.getInventory().addItem(new ItemStack(JotS.selectors[arg2], 1));
 						}
 					}
 					if (arg1.equals("upgrade")) {

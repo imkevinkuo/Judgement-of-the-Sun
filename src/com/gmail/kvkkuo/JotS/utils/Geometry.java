@@ -1,6 +1,7 @@
 package com.gmail.kvkkuo.JotS.utils;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,6 +13,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Geometry {
+
+    public static Location getGroundLocation(Location l, int tolerance) {
+        int z = 0;
+        Location groundLoc = l.clone();
+        while (z < tolerance && groundLoc.getBlock().getType().equals(Material.AIR)) {
+            groundLoc.add(0,-1,0);
+        }
+        if (!groundLoc.getBlock().getType().equals(Material.AIR)) {
+            groundLoc.add(0,1,0);
+        }
+        if (z < tolerance) {
+            return groundLoc;
+        }
+        return l;
+    }
+
+    public static List<Location> getPerpendicularLine(Location l, Vector norm, int range) {
+        List<Location> line = new ArrayList<>();
+        line.add(l);
+        for (int i = 0; i < range; i++) {
+            Vector newNorm = norm.clone().multiply(i+1);
+            line.add(l.clone().add(newNorm));
+            line.add(l.clone().subtract(newNorm));
+        }
+        return line;
+    }
 
     public static LivingEntity getCrosshair(Player player) {
         BlockIterator iterator = new BlockIterator(player.getWorld(), player
