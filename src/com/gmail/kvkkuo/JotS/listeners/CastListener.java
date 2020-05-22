@@ -28,7 +28,16 @@ public class CastListener implements Listener {
 	public CastListener(JotS plugin){
 		this.plugin = plugin;
 	}
-	
+
+	public static Material[] castItems = new Material[]{
+			Material.IRON_SWORD,
+			Material.BLAZE_POWDER,
+			Material.FEATHER,
+			Material.CLAY_BALL,
+			Material.BONE,
+			Material.GLOWSTONE_DUST
+	};
+
     @EventHandler
     public void onInteractEvent(PlayerInteractEvent event) {
     	Player p = event.getPlayer();
@@ -40,100 +49,55 @@ public class CastListener implements Listener {
 		Integer[] ups = plugin.upgrades.get(id);
 		// Casting Spells
 	    if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
-	    	if (faction == 0 && m.equals(Material.IRON_SWORD)) {
-	    		if (p.hasMetadata("silenced")) {
-	    			p.sendMessage("You cannot cast spells while Silenced!");
-	    			return;
-	    		}
-				cds[spl] = Duelist.cast(p, spl, cds[spl], ups[spl], plugin);
-	    	}
-	    	if (faction == 1 && m.equals(Material.BLAZE_POWDER)) {
-	    		if (p.hasMetadata("silenced")) {
-	    			p.sendMessage("You cannot cast spells while Silenced!");
-	    			return;
-	    		}
-				cds[spl] = Raider.cast(p, spl, cds[spl], ups[spl], plugin);
-			}
-	    	if (faction == 2 && m.equals(Material.FEATHER)) {
-	    		if (p.hasMetadata("silenced")) {
-	    			p.sendMessage("You cannot cast spells while Silenced!");
-	    			return;
-	    		}
-				cds[spl] = Assassin.cast(p, spl, cds[spl], ups[spl], plugin);
-	    	}
-	    	if (faction == 3 && m.equals(Material.CLAY_BALL)) {
-	    		if (p.hasMetadata("silenced")) {
-	    			p.sendMessage("You cannot cast spells while Silenced!");
-	    			return;
-	    		}
-				cds[spl] = Guardian.cast(p, spl, cds[spl], ups[spl], plugin);
-			}
-	    	if (faction == 4 && m.equals(Material.BONE)) {
-	    		if (p.hasMetadata("silenced")) {
-	    			p.sendMessage("You cannot cast spells while Silenced!");
-	    			return;
-	    		}
-				cds[spl] = Witherknight.cast(p, spl, cds[spl], ups[spl], plugin);
-			}
-	    	if (faction == 5 && m.equals(Material.GLOWSTONE_DUST)) {
-	    		if (p.hasMetadata("silenced")) {
-	    			p.sendMessage("You cannot cast spells while Silenced!");
-	    			return;
-	    		}
-				cds[spl] = Paladin.cast(p, spl, cds[spl], ups[spl], plugin);
+	    	for (int i = 0; i < 6; i++) {
+				if (faction == i && m.equals(castItems[i])) {
+					if (p.hasMetadata("silenced")) {
+						p.sendMessage("You cannot cast spells while Silenced!");
+						return;
+					}
+					switch (faction) {
+						case 0: cds[spl] = Duelist.cast(p, spl, cds[spl], ups[spl], plugin);
+						case 1: cds[spl] = Raider.cast(p, spl, cds[spl], ups[spl], plugin);
+						case 2: cds[spl] = Assassin.cast(p, spl, cds[spl], ups[spl], plugin);
+						case 3: cds[spl] = Guardian.cast(p, spl, cds[spl], ups[spl], plugin);
+						case 4: cds[spl] = Witherknight.cast(p, spl, cds[spl], ups[spl], plugin);
+						case 5: cds[spl] = Paladin.cast(p, spl, cds[spl], ups[spl], plugin);
+					}
+				}
 			}
 	    }
 	    // CYCLE
 	    if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
 	    	// Class Spell Cycling
-	    	if (faction == 0 && m.equals(Material.IRON_SWORD)) {
-	    		spl = (spl+1)%4;
-			}
-	    	if (faction == 1 && m.equals(Material.BLAZE_POWDER)) {
-				spl = (spl+1)%4;
-			}
-	    	if (faction == 2 && m.equals(Material.FEATHER)) {
-				spl = (spl+1)%4;
-			}
-	    	if (faction == 3 && m.equals(Material.CLAY_BALL)) {
-				spl = (spl+1)%4;
-			}
-	    	if (faction == 4 && m.equals(Material.BONE)) {
-				spl = (spl+1)%4;
-			}
-	    	if (faction == 5 && m.equals(Material.GLOWSTONE_DUST)) {
-				spl = (spl+1)%4;
+			for (int i = 0; i < 6; i++) {
+				if (faction == i && m.equals(castItems[i])) {
+					spl = (spl+1)%4;
+				}
 			}
 		}
 		plugin.spell.put(id, spl);
 	    CastListener.updateCycler(p, plugin.factions.get(id), cds[spl], ups[spl], spl);
 	    p.updateInventory();
     }
-    
-    public static void updateCycler(Player p, Integer faction, Integer cd, Integer upg, Integer spl) {
-		ItemStack i = p.getInventory().getItemInMainHand();
-		Material t = i.getType();
-		if (!t.equals(Material.AIR)) {
-			ItemMeta im = i.getItemMeta();
+
+	public static void updateCycler(Player p, Integer faction, Integer cd, Integer upg, Integer spl) {
+		ItemStack item = p.getInventory().getItemInMainHand();
+		Material m = item.getType();
+		if (!m.equals(Material.AIR)) {
+			ItemMeta im = item.getItemMeta();
 			ChatColor g = ChatColor.GREEN;
 			String dispname = "";
-			if (faction == 0 && t.equals(Material.IRON_SWORD)) {
-				dispname = Duelist.SKILLS[spl*8 + upg*2];
-			}
-			if (faction == 1 && t.equals(Material.BLAZE_POWDER)) {
-				dispname = Raider.SKILLS[spl*8 + upg*2];
-			}
-			if (faction == 2 && t.equals(Material.FEATHER)) {
-				dispname = Assassin.SKILLS[spl*8 + upg*2];
-			}
-			if (faction == 3 && t.equals(Material.CLAY_BALL)) {
-				dispname = Guardian.SKILLS[spl*8 + upg*2];
-			}
-			if (faction == 4 && i.getType().equals(Material.BONE)) {
-				dispname = Witherknight.SKILLS[spl*8 + upg*2];
-			}
-			if (faction == 5 && t.equals(Material.GLOWSTONE_DUST)) {
-				dispname = Paladin.SKILLS[spl*8 + upg*2];
+			for (int i = 0; i < 6; i++) {
+				if (faction == i && m.equals(castItems[i])) {
+					switch (faction) {
+						case 0: dispname = Duelist.SKILLS[spl*8 + upg*2];
+						case 1: dispname = Raider.SKILLS[spl*8 + upg*2];
+						case 2: dispname = Assassin.SKILLS[spl*8 + upg*2];
+						case 3: dispname = Guardian.SKILLS[spl*8 + upg*2];
+						case 4: dispname = Witherknight.SKILLS[spl*8 + upg*2];
+						case 5: dispname = Paladin.SKILLS[spl*8 + upg*2];
+					}
+				}
 			}
 			if (!dispname.equals("")) {
 				if (cd > 0) {
@@ -141,7 +105,7 @@ public class CastListener implements Listener {
 					dispname = dispname + " " + cd;
 				}
 				im.setDisplayName(g + dispname);
-				i.setItemMeta(im);
+				item.setItemMeta(im);
 			}
 		}
 	}

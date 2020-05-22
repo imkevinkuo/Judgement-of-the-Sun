@@ -63,7 +63,7 @@ public class UpgradeMenu {
 			new ItemStack(Material.BLAZE_ROD),
 			new ItemStack(Material.DEAD_BUSH),
 			new ItemStack(Material.NAME_TAG),
-	};	
+	};
 	static ItemStack[] paladinItems = new ItemStack[]{
 			new ItemStack(Material.GOLDEN_BOOTS),
 			new ItemStack(Material.GOLDEN_AXE),

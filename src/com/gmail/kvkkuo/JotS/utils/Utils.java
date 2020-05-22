@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.gmail.kvkkuo.JotS.classes.*;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -25,7 +25,7 @@ public class Utils {
 	public static String CSV_PATH = "/com/gmail/kvkkuo/JotS/csv/";
 
 	public static String[] readSkillsFromCSV(String fileName) {
-		String[] skills = new String[32];
+		String[] skillText = new String[32];
 		int i = 0;
 
 		try (InputStream resource = Utils.class.getResourceAsStream(CSV_PATH + fileName)) {
@@ -35,8 +35,7 @@ public class Utils {
 			for (String line: doc) {
 				for (String token : line.split("(\",)?\"")) {
 					if (!token.isEmpty() && !token.startsWith("#")) {
-						skills[i++] = token;
-						System.out.println(token);
+						skillText[i++] = token;
 					}
 				}
 			}
@@ -46,7 +45,7 @@ public class Utils {
 			ex.printStackTrace();
 		}
 
-		return skills;
+		return skillText;
 	}
 	
 	public static void clearMetadata(Player p, Plugin plugin) {

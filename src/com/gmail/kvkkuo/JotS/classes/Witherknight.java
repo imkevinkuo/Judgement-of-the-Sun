@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 
 public class Witherknight {
-	public static String[] SKILLS = Utils.readSkillsFromCSV("witherknight.csv");;
+	public static String[] SKILLS = Utils.readSkillsFromCSV("witherknight.csv");
 	static String[] TRAP_NAMES = new String[]{"Trap", "Curse", "Snare", "Shroud"};
 	static PotionEffect[] TRAP_EFFECTS = new PotionEffect[]{
 			new PotionEffect(PotionEffectType.POISON, 80, 2),
@@ -85,18 +85,7 @@ public class Witherknight {
 				cooldown = 20;
 			}
 			if (spell.equals(3)) {
-				if (upgrade.equals(0)) {
-					Witherknight.Trap(p, pl, 0);
-				}
-				if (upgrade.equals(1)) {
-					Witherknight.Trap(p, pl, 1);
-				}
-				if (upgrade.equals(2)) {
-					Witherknight.Trap(p, pl, 2);
-				}
-				if (upgrade.equals(3)) {
-					Witherknight.Trap(p, pl, 3);
-				}
+				Witherknight.Trap(p, pl, upgrade);
 				cooldown = 20;
 			}
 		}
