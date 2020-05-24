@@ -24,6 +24,9 @@ public class Cooldown extends BukkitRunnable {
 			if (p.hasMetadata("rage") || p.hasMetadata("fury")) {
 				p.getWorld().spawnParticle(Particle.FLAME, p.getEyeLocation(), 12, 0.5, 0.5, 0.5, 0);
 			}
+			if (p.hasMetadata("nofall") && p.isOnGround()) {
+				p.removeMetadata("nofall", plugin);
+			}
 			UUID id = p.getUniqueId();
 			Integer spell = plugin.spell.get(id);
 			Integer[] cds = plugin.cooldowns.get(id);

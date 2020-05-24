@@ -134,7 +134,7 @@ public class Duelist {
 
 		World w = p.getWorld();
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 3));
-		p.setVelocity(p.getLocation().getDirection().setY(0).multiply(-1));
+		p.setVelocity(p.getLocation().getDirection().setY(0).multiply(-0.5));
 		new BukkitRunnable() {
 			public void run() {
 				p.setVelocity(p.getLocation().getDirection().setY(0));

@@ -10,6 +10,42 @@ import com.gmail.kvkkuo.JotS.classes.*;
 import com.gmail.kvkkuo.JotS.utils.IconMenu;
 
 public class UpgradeMenu {
+	static ItemStack[] duelistItems = new ItemStack[]{
+			new ItemStack(Material.IRON_SHOVEL),
+			new ItemStack(Material.IRON_PICKAXE),
+			new ItemStack(Material.IRON_AXE),
+			new ItemStack(Material.IRON_HOE),
+			new ItemStack(Material.IRON_INGOT),
+			new ItemStack(Material.BRICK),
+			new ItemStack(Material.GOLD_INGOT),
+			new ItemStack(Material.NETHER_BRICK),
+			new ItemStack(Material.POPPED_CHORUS_FRUIT),
+			new ItemStack(Material.ROTTEN_FLESH),
+			new ItemStack(Material.SHULKER_SHELL),
+			new ItemStack(Material.BEETROOT_SOUP),
+			new ItemStack(Material.CYAN_DYE),
+			new ItemStack(Material.DIAMOND_SWORD),
+			new ItemStack(Material.PRISMARINE_CRYSTALS),
+			new ItemStack(Material.PRISMARINE_SHARD)
+	};
+	static ItemStack[] raiderItems = new ItemStack[]{
+			new ItemStack(Material.FIRE_CHARGE),
+			new ItemStack(Material.BLAZE_POWDER),
+			new ItemStack(Material.COMPARATOR),
+			new ItemStack(Material.ORANGE_DYE),
+			Raider.coloredPotion("", Color.RED, Material.POTION),
+			Raider.coloredPotion("", Color.BLACK, Material.POTION),
+			Raider.coloredPotion("", Color.AQUA, Material.POTION),
+			Raider.coloredPotion("", Color.GREEN, Material.POTION),
+			new ItemStack(Material.LEATHER_BOOTS),
+			new ItemStack(Material.RED_DYE),
+			new ItemStack(Material.BEETROOT),
+			new ItemStack(Material.FIREWORK_ROCKET),
+			new ItemStack(Material.TRIPWIRE_HOOK),
+			new ItemStack(Material.BLAZE_ROD),
+			new ItemStack(Material.DEAD_BUSH),
+			new ItemStack(Material.NAME_TAG),
+	};
 	static ItemStack[] assassinItems = new ItemStack[]{
 			new ItemStack(Material.QUARTZ),
 			new ItemStack(Material.STRING),
@@ -46,42 +82,6 @@ public class UpgradeMenu {
 			new ItemStack(Material.WHEAT),
 			new ItemStack(Material.ROSE_BUSH)
 	};
-	static ItemStack[] raiderItems = new ItemStack[]{
-			new ItemStack(Material.FIRE_CHARGE),
-			new ItemStack(Material.BLAZE_POWDER),
-			new ItemStack(Material.COMPARATOR),
-			new ItemStack(Material.ORANGE_DYE),
-			Raider.coloredPotion("", Color.RED, Material.POTION),
-			Raider.coloredPotion("", Color.BLACK, Material.POTION),
-			Raider.coloredPotion("", Color.AQUA, Material.POTION),
-			Raider.coloredPotion("", Color.GREEN, Material.POTION),
-			new ItemStack(Material.LEATHER_BOOTS),
-			new ItemStack(Material.RED_DYE),
-			new ItemStack(Material.BEETROOT),
-			new ItemStack(Material.FIREWORK_ROCKET),
-			new ItemStack(Material.TRIPWIRE_HOOK),
-			new ItemStack(Material.BLAZE_ROD),
-			new ItemStack(Material.DEAD_BUSH),
-			new ItemStack(Material.NAME_TAG),
-	};
-	static ItemStack[] paladinItems = new ItemStack[]{
-			new ItemStack(Material.GOLDEN_BOOTS),
-			new ItemStack(Material.GOLDEN_AXE),
-			new ItemStack(Material.GOLDEN_APPLE),
-			new ItemStack(Material.TOTEM_OF_UNDYING),
-			new ItemStack(Material.GLOWSTONE_DUST),
-			new ItemStack(Material.GOLDEN_CARROT),
-			new ItemStack(Material.YELLOW_DYE),
-			new ItemStack(Material.SUNFLOWER),
-			new ItemStack(Material.SNOWBALL),
-			new ItemStack(Material.ICE),
-			new ItemStack(Material.LIGHT_BLUE_DYE),
-			new ItemStack(Material.LAPIS_LAZULI),
-			new ItemStack(Material.PINK_DYE),
-			new ItemStack(Material.MAGENTA_DYE),
-			new ItemStack(Material.MAGMA_CREAM),
-			new ItemStack(Material.REDSTONE),
-	};
 	static ItemStack[] witherItems = new ItemStack[]{
 			new ItemStack(Material.SLIME_BLOCK),
 			new ItemStack(Material.MOSSY_COBBLESTONE),
@@ -100,23 +100,23 @@ public class UpgradeMenu {
 			new ItemStack(Material.IRON_BARS),
 			new ItemStack(Material.OBSIDIAN),
 	};
-	static ItemStack[] duelistItems = new ItemStack[]{
-			new ItemStack(Material.IRON_SHOVEL),
-			new ItemStack(Material.IRON_PICKAXE),
-			new ItemStack(Material.IRON_AXE),
-			new ItemStack(Material.IRON_HOE),
-			new ItemStack(Material.IRON_INGOT),
-			new ItemStack(Material.BRICK),
-			new ItemStack(Material.GOLD_INGOT),
-			new ItemStack(Material.NETHER_BRICK),
-			new ItemStack(Material.POPPED_CHORUS_FRUIT),
-			new ItemStack(Material.ROTTEN_FLESH),
-			new ItemStack(Material.SHULKER_SHELL),
-			new ItemStack(Material.BEETROOT_SOUP),
-			new ItemStack(Material.CYAN_DYE),
-			new ItemStack(Material.DIAMOND_SWORD),
-			new ItemStack(Material.PRISMARINE_CRYSTALS),
-			new ItemStack(Material.PRISMARINE_SHARD)
+	static ItemStack[] paladinItems = new ItemStack[]{
+			new ItemStack(Material.GOLDEN_BOOTS),
+			new ItemStack(Material.GOLDEN_AXE),
+			new ItemStack(Material.GOLDEN_APPLE),
+			new ItemStack(Material.TOTEM_OF_UNDYING),
+			new ItemStack(Material.GLOWSTONE_DUST),
+			new ItemStack(Material.GOLDEN_CARROT),
+			new ItemStack(Material.YELLOW_DYE),
+			new ItemStack(Material.SUNFLOWER),
+			new ItemStack(Material.SNOWBALL),
+			new ItemStack(Material.ICE),
+			new ItemStack(Material.LIGHT_BLUE_DYE),
+			new ItemStack(Material.LAPIS_LAZULI),
+			new ItemStack(Material.PINK_DYE),
+			new ItemStack(Material.MAGENTA_DYE),
+			new ItemStack(Material.MAGMA_CREAM),
+			new ItemStack(Material.REDSTONE),
 	};
 	static ItemStack[][] items = new ItemStack[][]{duelistItems, raiderItems, assassinItems, guardianItems, witherItems, paladinItems};
 	static String[][] skills = new String[][]{Duelist.SKILLS, Raider.SKILLS, Assassin.SKILLS, Guardian.SKILLS, Witherknight.SKILLS, Paladin.SKILLS};

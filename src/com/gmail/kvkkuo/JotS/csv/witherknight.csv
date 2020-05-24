@@ -1,6 +1,6 @@
 # AoE,
-"Duskwave","Sends forth a shockwave that applies Wither to enemies in a cone."
-"Coldburst","Apply Wither and send enemies airborne in an area around you."
+"Duskwave","Sends forth a two shockwaves that apply Wither to enemies in a cone."
+"Noxburst","Apply Wither to enemies in an area around you."
 "Arcwither","Shoot a bolt of energy that applies Wither and chains to nearby enemies."
 "Nightfall","Pull in and apply Wither to all nearby enemies."
 # Passive,
@@ -9,10 +9,10 @@
 "Wither Wisp","Gain Speed when enemies around you take Wither damage."
 "Wither Rebirth","Heal when enemies around you take Wither damage."
 # AoE 2,
-"Specter Spear","Stab forward, applying Wither and Blindness to enemies in a line."
-"Skull Slash","Leap forward while shooting 2 Wither Skulls, then slash in a downward arc. Applies Wither."
-"Spirit Stab","Stab forward, applying Wither and Slowness to enemies in a line."
-"Soul Slice","Slash forward twice, then uppercut while jumping backwards. Applies Wither."
+"Skull Spear","Stab forward, applying Wither and Blindness to enemies in a line."
+"Skull Slash","Shoot 2 Wither Skulls, then slash in a forward arc. Applies Wither."
+"Skull Shred","Knock back enemies, then fire a barrage of Wither Skulls. Applies Wither."
+"Skull Swarm","Slash forward, then uppercut backwards while firing Wither Skulls. Applies Wither."
 # Trap,
 "Shadow Trap","Drops a trap that Poisons nearby enemies and teleports you behind them."
 "Shadow Curse","Drops a trap that applies Mining Fatigue to nearby enemies and teleports you behind them."

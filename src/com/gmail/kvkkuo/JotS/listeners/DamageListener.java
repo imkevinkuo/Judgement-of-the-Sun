@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.gmail.kvkkuo.JotS.classes.Witherknight;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -31,6 +33,7 @@ import com.gmail.kvkkuo.JotS.classes.Assassin;
 import com.gmail.kvkkuo.JotS.classes.Duelist;
 import com.gmail.kvkkuo.JotS.classes.Paladin;
 import com.gmail.kvkkuo.JotS.utils.Utils;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageListener implements Listener {
 	
@@ -142,32 +145,74 @@ public class DamageListener implements Listener {
 			if (d.getType().equals(EntityType.FIREWORK)) {
 				event.setCancelled(true);
 			}
+			// Wither skulls
+			if (d instanceof WitherSkull) {
+				if (v.equals(((WitherSkull) d).getShooter())) {
+					event.setCancelled(true);
+				}
+			}
     	}
 	}
 	
 	@EventHandler
 	public void DamagedByEnvironment(EntityDamageEvent event) {
-		Entity pv = event.getEntity();
-		if (pv instanceof Player) {
-			Player p = (Player) pv;
+		Entity v = event.getEntity();
+		if (v instanceof LivingEntity) {
+			LivingEntity lv = (LivingEntity) v;
 			DamageCause cause = event.getCause();
-			// Raider Fall Resistance
-			if (cause.equals(DamageCause.FALL)) {
-				if (p.hasMetadata("nofall"))  {
-					p.removeMetadata("nofall", plugin);
+			if (v instanceof Player) {
+				Player p = (Player) v;
+				// Raider Fall Resistance
+				if (cause.equals(DamageCause.FALL)) {
+					if (p.hasMetadata("nofall"))  {
+						p.removeMetadata("nofall", plugin);
+						event.setCancelled(true);
+					}
+				}
+				// Paladin Shielding
+				if (p.hasMetadata("guard") && glacialBlocks.contains(cause)) {
+					if (Paladin.consumeGuard(p)) {
+						event.setDamage(0);
+					}
+				}
+				if (!event.isCancelled() && p.hasMetadata("redemption") && event.getFinalDamage() > p.getHealth()) {
 					event.setCancelled(true);
+					p.removeMetadata("redemption", plugin);
+					Paladin.Revive(p, plugin);
 				}
 			}
-			// Paladin Shielding
-			if (p.hasMetadata("guard") && glacialBlocks.contains(cause)) {
-				if (Paladin.consumeGuard(p)) {
-					event.setDamage(0);
+			// Witherknight passive
+			if (cause.equals(DamageCause.WITHER)) {
+				if (lv.hasMetadata("withered")) {
+					Player damager = (Player) lv.getMetadata("withered").get(0).value();
+					if (damager != null) {
+						if (damager.getLocation().distance(lv.getLocation()) < 10) {
+							Integer passiveUpgrade = plugin.upgrades.get(damager.getUniqueId())[1];
+							if (passiveUpgrade != null) {
+								if (passiveUpgrade == 0) {
+									Witherknight.Barrier(damager, plugin);
+								}
+								if (passiveUpgrade == 1) {
+									Witherknight.Drain(damager, plugin);
+								}
+								if (passiveUpgrade == 2) {
+									Witherknight.Wisp(damager, plugin);
+								}
+								if (passiveUpgrade == 3) {
+									Witherknight.Rebirth(damager, plugin);
+								}
+							}
+						}
+					}
+					new BukkitRunnable() { // Combo timer
+						@Override
+						public void run() {
+							if (lv.getPotionEffect(PotionEffectType.WITHER) == null) {
+								lv.removeMetadata("withered", plugin);
+							}
+						}
+					}.runTaskLater(plugin, 20);
 				}
-			}
-			if (!event.isCancelled() && p.hasMetadata("redemption") && event.getFinalDamage() > p.getHealth()) {
-				event.setCancelled(true);
-				p.removeMetadata("redemption", plugin);
-				Paladin.Revive(p, plugin);
 			}
 		}
 	}

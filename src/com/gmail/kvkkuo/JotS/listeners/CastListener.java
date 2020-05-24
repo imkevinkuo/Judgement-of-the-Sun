@@ -70,6 +70,10 @@ public class CastListener implements Listener {
 				if (faction == i && m.equals(JotS.selectors[i])) {
 					spl = (spl+1)%4;
 				}
+				// Passive Witherknight spell
+				if (faction == 4 && spl == 1) {
+					spl = 2;
+				}
 			}
 		}
 		plugin.spell.put(id, spl);
