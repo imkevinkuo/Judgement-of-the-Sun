@@ -57,20 +57,7 @@ public class Witherknight {
 				cooldown = 12;
 			}
 			if (spell.equals(1)) {
-//				Passive spell, do nothing
-//				if (upgrade.equals(0)) {
-//					Witherknight.Barrier(p, cooldown, pl);
-//				}
-//				if (upgrade.equals(1)) {
-//					Witherknight.Drain(p, cooldown, pl);
-//				}
-//				if (upgrade.equals(2)) {
-//					Witherknight.Wisp(p, cooldown, pl);
-//				}
-//				if (upgrade.equals(3)) {
-//					Witherknight.Rebirth(p, cooldown, pl);
-//				}
-//				if (c) {cooldown = 12;}
+				// Shouldn't appear in cycle
 			}
 			if (spell.equals(2)) {
 				if (upgrade.equals(0)) {
@@ -95,11 +82,6 @@ public class Witherknight {
 		return cooldown;
 	}
 
-	public static void applyWither(Player p, LivingEntity v, int duration, int amplifier, Plugin plugin) {
-		v.setMetadata("withered", new FixedMetadataValue(plugin, p));
-		v.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, duration, amplifier));
-	}
-
 	public static void Duskwave(Player p, Plugin plugin) {
 		World w = p.getWorld();
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 3));
@@ -110,49 +92,40 @@ public class Witherknight {
 		Vector dir = p.getLocation().getDirection().setY(0).normalize().multiply(0.8);
 		Vector norm = new Vector(-dir.getZ(), 0, dir.getX()).multiply(0.8);
 		RayTrace eye = new RayTrace(start, dir, range, magnitude);
-		for (count = 0; count < range; count += magnitude) {
-			Location center = eye.next().clone();
-			Location groundLoc = Geometry.getGroundLocation(center, 6);
-			List<Location> perpLine = Geometry.getPerpendicularLine(groundLoc, norm, count);
-			Integer c = count;
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					for (Location l : perpLine) {
-						p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, l, 4, 0.1, 0, 0.1, 0);
-						Utils.applyNearby(center, p, c, 1, c, (LivingEntity le) -> {
-							le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 1));
-						});
-					}
-				}
-			}.runTaskLater(plugin, count);
-			for (int i = 1; i < 3; i++) {
+		for (int i = 0; i < 3; i++) {
+			for (count = 0; count < range; count += magnitude) {
+				Location center = eye.next().clone();
+				Location groundLoc = Geometry.getGroundLocation(center, 6);
+				List<Location> perpLine = Geometry.getPerpendicularLine(groundLoc, norm, count);
+				final int finalI = i;
+				final int c = count;
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						for (Location l : perpLine) {
-							Utils.applyNearby(center, p, 1, 1, 1, (LivingEntity le) -> {
-								le.damage(2, p);
-								applyWither(p, le, 40, 1, plugin);
-							});
-							p.getWorld().spawnParticle(Particle.SPELL_WITCH, l.clone().add(0, 1, 0), 3, 0, 0.5, 0, 0);
+						if (finalI == 0) {
+							for (Location l : perpLine) {
+								p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, l, 4, 0.1, 0, 0.1, 0);
+								Utils.applyNearby(center, p, c, 1, c, (LivingEntity le) -> {
+									le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 1));
+								});
+							}
+						}
+						else {
+							for (Location l : perpLine) {
+								Utils.applyNearby(center, p, 1, 1, 1, (LivingEntity le) -> {
+									le.damage(2, p);
+									le.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 1));
+								});
+								p.getWorld().spawnParticle(Particle.SPELL_WITCH, l.clone().add(0, 1, 0), 3, 0, 0.5, 0, 0);
+							}
+						}
+						if (c == 0) {
+							w.playSound(start, Sound.ENTITY_WITHER_SHOOT, 1, 1);
 						}
 					}
-				}.runTaskLater(plugin, 15*i + c);
+				}.runTaskLater(plugin, 15*i + count);
 			}
 		}
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				w.playSound(start, Sound.ENTITY_WITHER_SHOOT, 1, 1);
-			}
-		}.runTaskLater(plugin, 15);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				w.playSound(start, Sound.ENTITY_WITHER_SHOOT, 1, 1);
-			}
-		}.runTaskLater(plugin, 30);
 	}
 
 	public static void Noxburst(Player p, Plugin plugin) {
@@ -190,7 +163,7 @@ public class Witherknight {
 				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 				Utils.applyNearby(center, p, range, 1, range, (LivingEntity le) -> {
 					le.damage(2,p);
-					applyWither(p, le, 40, 1, plugin);
+					le.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 1));
 				});
 			}
 		}.runTaskLater(plugin, 20);
@@ -216,7 +189,7 @@ public class Witherknight {
 								w.playSound(l, Sound.BLOCK_NOTE_BLOCK_SNARE, 1, 1);
 								w.spawnParticle(Particle.SPELL_WITCH, le.getEyeLocation(), 8, 0, 0.5, 0, 0.05);
 								Utils.magicDamage(p, le, 2, plugin);
-								applyWither(p, le, 40, 1, plugin);
+								le.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 1));
 								le.setVelocity(new Vector(0, 0, 0));
 								affected.add(le);
 								LivingEntity le2 = Utils.getNearestEntity(l, affected, 5, 3, 5);
@@ -271,7 +244,7 @@ public class Witherknight {
 			public void run() {
 				Utils.applyNearby(p.getLocation(), p, range, 1, range, (LivingEntity le) -> {
 					le.damage(2, p);
-					applyWither(p, le, 40, 1, plugin);
+					le.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 1));
 					le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 0));
 					le.teleport(center);
 				});
@@ -280,22 +253,22 @@ public class Witherknight {
 	}
 
 	public static void Barrier(Player p, Plugin plugin) {
-		p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getEyeLocation(), 4, 0.1, 0.3, 0.1, 0);
+		p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getEyeLocation(), 6, 0.3, 0.2, 0.3, 0);
 		p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 40, 0));
 	}
 
 	public static void Drain(Player p, Plugin plugin) {
-		p.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, p.getEyeLocation(), 4, 0.1, 0.3, 0.1, 0);
+		p.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, p.getEyeLocation(), 4, 0.3, 0.2, 0.3, 0);
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 20, 0));
 	}
 
 	public static void Wisp(Player p, Plugin plugin) {
-		p.getWorld().spawnParticle(Particle.CLOUD, p.getEyeLocation(), 4, 0.1, 0.3, 0.1, 0);
+		p.getWorld().spawnParticle(Particle.CLOUD, p.getEyeLocation(), 6, 0.3, 0.2, 0.3, 0);
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
 	}
 
 	public static void Rebirth(Player p, Plugin plugin) {
-		p.getWorld().spawnParticle(Particle.HEART, p.getEyeLocation(), 4, 0.1, 0.3, 0.1, 0);
+		p.getWorld().spawnParticle(Particle.HEART, p.getEyeLocation(), 6, 0.3, 0.2, 0.3, 0);
 		p.setHealth(p.getHealth() + 1);
 	}
 

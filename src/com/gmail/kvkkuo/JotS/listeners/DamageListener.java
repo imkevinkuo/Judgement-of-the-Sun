@@ -183,36 +183,24 @@ public class DamageListener implements Listener {
 			}
 			// Witherknight passive
 			if (cause.equals(DamageCause.WITHER)) {
-				if (lv.hasMetadata("withered")) {
-					Player damager = (Player) lv.getMetadata("withered").get(0).value();
-					if (damager != null) {
-						if (damager.getLocation().distance(lv.getLocation()) < 10) {
-							Integer passiveUpgrade = plugin.upgrades.get(damager.getUniqueId())[1];
-							if (passiveUpgrade != null) {
-								if (passiveUpgrade == 0) {
-									Witherknight.Barrier(damager, plugin);
-								}
-								if (passiveUpgrade == 1) {
-									Witherknight.Drain(damager, plugin);
-								}
-								if (passiveUpgrade == 2) {
-									Witherknight.Wisp(damager, plugin);
-								}
-								if (passiveUpgrade == 3) {
-									Witherknight.Rebirth(damager, plugin);
-								}
-							}
+				Utils.applyNearbyPlayers(lv.getLocation(), 8, (LivingEntity le) -> {
+					Player p = (Player) le;
+					Integer passiveUpgrade = plugin.upgrades.get(p.getUniqueId())[1];
+					if (passiveUpgrade != null) {
+						if (passiveUpgrade == 0) {
+							Witherknight.Barrier(p, plugin);
+						}
+						if (passiveUpgrade == 1) {
+							Witherknight.Drain(p, plugin);
+						}
+						if (passiveUpgrade == 2) {
+							Witherknight.Wisp(p, plugin);
+						}
+						if (passiveUpgrade == 3) {
+							Witherknight.Rebirth(p, plugin);
 						}
 					}
-					new BukkitRunnable() { // Combo timer
-						@Override
-						public void run() {
-							if (lv.getPotionEffect(PotionEffectType.WITHER) == null) {
-								lv.removeMetadata("withered", plugin);
-							}
-						}
-					}.runTaskLater(plugin, 20);
-				}
+				});
 			}
 		}
 	}
@@ -261,9 +249,9 @@ public class DamageListener implements Listener {
     		e.setCancelled(true);
     		ws.getWorld().spawnParticle(Particle.SMOKE_NORMAL, e.getLocation(), 20, 0, 0, 0, 0.2);
     		ws.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, e.getLocation(), 1, 0, 0, 0);
-    		Utils.applyNearby(ws.getLocation(), (LivingEntity) ws.getShooter(), 4, 4, 4, (LivingEntity le) -> {
-    			le.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 60, 0));
-    		});
+			Utils.applyNearby(ws.getLocation(), (LivingEntity) ws.getShooter(), 4, 4, 4, (LivingEntity le) -> {
+				le.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 1));
+			});
     	}
     	if (proj.getType().equals(EntityType.FIREBALL) && proj.hasMetadata("shot")) {
     		Fireball fire = (Fireball) proj;
@@ -276,11 +264,11 @@ public class DamageListener implements Listener {
     	}
     }
     
-    // No environmental fire
-    @EventHandler
-    public void FireballFire(BlockIgniteEvent e) {
-    	e.setCancelled(true);
-    }
+     // No environmental fire
+//    @EventHandler
+//    public void FireballFire(BlockIgniteEvent e) {
+//    	e.setCancelled(true);
+//    }
     // No burning in sun
     @EventHandler
     public void onEntityCombust(EntityCombustEvent e){
