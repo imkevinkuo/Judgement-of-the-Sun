@@ -188,12 +188,12 @@ public class Raider {
 			BukkitTask bt = new BukkitRunnable() {
 				@Override
 				public void run() {
-					Location to = Geometry.getCirclePoint(p.getEyeLocation(), 1.5, (Math.PI*in*2/6) - (double) item.getTicksLived()/5);
+					Location to = Geometry.getCirclePoint(p.getLocation().add(0, 1, 0), 1.5, (Math.PI*in*2/6) - (double) item.getTicksLived()/5);
 					Location from = item.getLocation();
 					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
 				}
 			}.runTaskTimer(plugin, 1, 1); 
-			/* throw em out */
+			/* fire */
 			new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -206,18 +206,18 @@ public class Raider {
 						v.add(new Vector(0, 0.3, 0));
 						item.setVelocity(v);
 					}
+					else {
+						item.setVelocity(p.getLocation().getDirection().multiply(1.5));
+					}
 				}
 			}.runTaskLater(plugin, 20 + i*4);
-			new BukkitRunnable() {
+			BukkitTask r = new BukkitRunnable() {
 				@Override
 				public void run() {
 					if (item.getTicksLived()%3 == 0) {
 						w.spawnParticle(Particle.FLAME, item.getLocation(), 1, 0, 0, 0, 0);
 					}
-					if (item.isDead()) {
-						this.cancel();
-					}
-					if (item.isOnGround()) {
+					if (item.getVelocity().length() < 0.5) {
 						detonate(item, p, plugin);
 						this.cancel();
 					}
@@ -230,16 +230,29 @@ public class Raider {
 					}
 				}
 			}.runTaskTimer(plugin, 20 + i*4, 1);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (!item.isDead()) {
+						r.cancel();
+						detonate(item, p, plugin);
+					}
+				}
+			}.runTaskLater(plugin, 40 + i*4);
 		}
 	}
-	public static void detonate(Item item, Player p, Plugin plugin) {
-		Utils.applyNearby(item.getLocation(), p, 1, 1, 1, (LivingEntity le) -> {
+	public static void detonate(Entity entity, Player p, Plugin plugin) {
+		Utils.applyNearby(entity.getLocation(), p, 1, 1, 1, (LivingEntity le) -> {
 			Utils.magicDamage(p, le, 2, plugin);
 			le.setFireTicks(40);
 		});
-		p.getWorld().playSound(item.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
-		p.getWorld().spawnParticle(Particle.FLAME, item.getLocation(), 6, 0, 0, 0, 0.1);
-		item.remove();
+		p.getWorld().playSound(entity.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1, 1);
+		p.getWorld().spawnParticle(Particle.FLAME, entity.getLocation(), 12, 0, 0, 0, 0.2);
+		p.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, entity.getLocation(), 12, 0, 0, 0, 0.3);
+		p.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, entity.getLocation(), 1, 0, 0, 0, 0);
+		p.getWorld().playSound(entity.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
+		p.getWorld().playSound(entity.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
+		entity.remove();
 	}
 	
 	public static ItemStack coloredPotion(String name, Color color, Material type) {
@@ -252,7 +265,7 @@ public class Raider {
 	}
 	public static void Healing(Player p, Integer cooldown, Plugin plugin) {
 		World w = p.getWorld();
-		ThrownPotion tp = (ThrownPotion) w.spawnEntity(p.getLocation(), EntityType.SPLASH_POTION);
+		ThrownPotion tp = (ThrownPotion) w.spawnEntity(p.getEyeLocation(), EntityType.SPLASH_POTION);
 		tp.setItem(coloredPotion("heal", Color.FUCHSIA, Material.SPLASH_POTION));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 1, 0));
 		p.removePotionEffect(PotionEffectType.POISON);
@@ -308,12 +321,18 @@ public class Raider {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				p.setVelocity(new Vector(0, -1, 0));
+			}
+		}.runTaskLater(plugin, 10);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
 				if (p.isOnGround() && p.hasMetadata("bsmash")) {
 					Raider.SmashT(p, plugin);
 					this.cancel();
 				}
 			}
-		}.runTaskTimer(plugin, 1, 1);
+		}.runTaskTimer(plugin, 5, 1);
 	}
 	public static void SmashT(Player p, Plugin plugin) {
 		p.removeMetadata("bsmash", plugin);
@@ -390,13 +409,13 @@ public class Raider {
 	public static void Hooked(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 4, 1);
 		ArrayList<Item> hooklist = new ArrayList<Item>();
-		for (int i = 0; i < 8; i ++) {
+		for (int i = 0; i < 12; i ++) {
 			ItemStack is = new ItemStack(Material.TRIPWIRE_HOOK);
 			ItemMeta im = is.getItemMeta();
 			im.setDisplayName("hook" + i + p.getName());
 			is.setItemMeta(im);
 			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
-			item.setVelocity(p.getLocation().getDirection().multiply(0.3 + 0.12*i));
+			item.setVelocity(p.getLocation().getDirection().multiply(0.1 + 0.1*i));
 			item.setPickupDelay(Integer.MAX_VALUE);
 			hooklist.add(item);
 			BukkitTask bt = new BukkitRunnable() {
@@ -426,57 +445,68 @@ public class Raider {
 			}.runTaskTimer(plugin, 1, 1);
 			new BukkitRunnable() {
 				public void run() {
-					if (item.getTicksLived() >= 55) {
+					if (!item.isDead()) {
 						p.getWorld().playEffect(item.getLocation(), Effect.STEP_SOUND, Material.TRIPWIRE_HOOK);
+						item.remove();
+						bt.cancel();
 					}
-					item.remove();
-					bt.cancel();
 				}
 			}.runTaskLater(plugin, 60);
 		}
 	}
 	public static void Singed(Player p, Integer cooldown, Plugin plugin) {
-		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_LAVA_EXTINGUISH, 1, 1);
-		for (int i = 0; i < 8; i ++) {
+		p.getWorld().playSound(p.getLocation(), Sound.ITEM_TRIDENT_THROW, 1, 1);
+		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
+		for (int i = 0; i < 12; i ++) {
 			ItemStack is = new ItemStack(Material.BLAZE_POWDER);
 			ItemMeta im = is.getItemMeta();
 			im.setDisplayName("fire" + i + p.getName());
 			is.setItemMeta(im);
 			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
 			item.setFireTicks(60);
-			item.setVelocity(p.getLocation().getDirection().multiply(0.3 + 0.12*i));
+			item.setVelocity(p.getLocation().getDirection().multiply(0.1 + 0.1*i));
 			item.setPickupDelay(Integer.MAX_VALUE);
 
-			new BukkitRunnable() {
+			BukkitTask task = new BukkitRunnable() {
 				public void run() {
+					p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, item.getLocation(), 1, 0, 0, 0, 0.1);
 					Utils.applyNearby(item.getLocation(), p, 1, 1, 1, (LivingEntity le) -> {
 						le.setFireTicks(60);
 						le.damage(2, p);
-						p.getWorld().spawnParticle(Particle.BLOCK_CRACK, item.getLocation(), 3, 0, 0, 0, 0.1, firedata);
 						item.remove();
 						this.cancel();
 					});
-					if (item.isOnGround()) {
-						p.getWorld().spawnParticle(Particle.BLOCK_CRACK, item.getLocation(), 3, 0, 0, 0, 0.1, firedata);
-						item.remove();
-						this.cancel();
-					}
 				}
 			}.runTaskTimer(plugin, 1, 1);
+
+			new BukkitRunnable() {
+				public void run() {
+					if (!item.isDead()) {
+						p.getWorld().spawnParticle(Particle.FLAME, item.getLocation(), 8, 0, 0, 0, 0.1);
+						item.remove();
+						task.cancel();
+					}
+				}
+			}.runTaskLater(plugin, 60);
 		}
+		new BukkitRunnable() {
+			public void run() {
+				p.getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
+			}
+		}.runTaskLater(plugin, 60);
 	}
 	private static BlockData spikedata = Material.DEAD_BUSH.createBlockData();
 	public static void Spiked(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_SKELETON_STEP, 5, 1);
 
-		for (int i = 0; i < 8; i ++) {
+		for (int i = 0; i < 12; i ++) {
 			ItemStack is = new ItemStack(Material.DEAD_BUSH);
 			ItemMeta im = is.getItemMeta();
 			im.setDisplayName("spike" + i + p.getName());
 			is.setItemMeta(im);
 
 			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
-			item.setVelocity(p.getLocation().getDirection().multiply(0.3 + 0.12*i));
+			item.setVelocity(p.getLocation().getDirection().multiply(0.1 + 0.1*i));
 			item.setPickupDelay(Integer.MAX_VALUE);
 
 			BukkitTask bt = new BukkitRunnable() {
@@ -503,17 +533,17 @@ public class Raider {
 	public static void Barbed(Player p, Integer cooldown, Plugin plugin) {
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 4, 1);
 
-		for (int i = 0; i < 8; i ++) {
+		for (int i = 0; i < 12; i ++) {
 			ItemStack is = new ItemStack(Material.NAME_TAG);
 			ItemMeta im = is.getItemMeta();
 			im.setDisplayName("barb" + i + p.getName());
 			is.setItemMeta(im);
 
 			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
-			item.setVelocity(p.getLocation().getDirection().multiply(0.3 + 0.12*i));
+			item.setVelocity(p.getLocation().getDirection().multiply(0.1 + 0.1*i));
 			item.setPickupDelay(Integer.MAX_VALUE);
 
-			new BukkitRunnable() {
+			BukkitTask task = new BukkitRunnable() {
 				@Override
 				public void run() {
 					Utils.applyNearby(item.getLocation(), p, 1, 1, 1, (LivingEntity le) -> {
@@ -524,14 +554,16 @@ public class Raider {
 						item.remove();
 						this.cancel();
 					});
-					if (item.isOnGround()) {
-						p.getWorld().spawnParticle(Particle.BLOCK_CRACK, item.getLocation(), 5, 0, 0, 0, spikedata);					item.remove();
-						p.getWorld().playSound(item.getLocation(), Sound.BLOCK_TRIPWIRE_ATTACH, 0.2f, 1);
-						item.remove();
-						this.cancel();
-					}
 				}
 			}.runTaskTimer(plugin, 1, 1);
+
+			new BukkitRunnable() {
+				public void run() {
+					p.getWorld().spawnParticle(Particle.BLOCK_CRACK, item.getLocation(), 5, 0, 0, 0, spikedata);					item.remove();
+					p.getWorld().playSound(item.getLocation(), Sound.BLOCK_TRIPWIRE_ATTACH, 0.2f, 1);
+					task.cancel();
+				}
+			}.runTaskLater(plugin, 120);
 		}
 	}
 }

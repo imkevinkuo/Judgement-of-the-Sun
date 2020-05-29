@@ -204,12 +204,11 @@ public class Geometry {
     }
 
     // Gets a single circle point with offset in XZ plane
-    public static Location getCirclePoint(Location center, double d, double time) {
-        Location l = center;
-        double dx = d*Math.cos(time);
-        double dz = d*Math.sin(time);
-        l.add(dx, 0, dz);
-        return l;
+    public static Location getCirclePoint(Location center, double r, double time) {
+        double dx = r*Math.cos(time);
+        double dz = r*Math.sin(time);
+        center.add(dx, 0, dz);
+        return center;
     }
 
     public static List<Location> getSpherePoints(Location location, float rho, int phiSteps, double phiMin, double phiMax, int thetaSteps, double thetaMin, double thetaMax) {

@@ -3,6 +3,7 @@ package com.gmail.kvkkuo.JotS.classes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gmail.kvkkuo.JotS.utils.Geometry;
 import com.gmail.kvkkuo.JotS.utils.RayTrace;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -28,14 +29,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.kvkkuo.JotS.utils.FireworkPlayer;
 import com.gmail.kvkkuo.JotS.utils.Utils;
+import org.bukkit.util.Vector;
 
 public class Guardian {
 	public static String[] SKILLS = Utils.readSkillsFromCSV("guardian.csv");
 	
 	public static Integer cast(Player p, Integer spell, Integer cooldown, Integer upgrade, Plugin plugin) {
 		if (cooldown <= 0) {
-			boolean c = true;
-			if (spell.equals(1)) {
+			if (spell.equals(0)) {
 				if (upgrade.equals(0)) {
 					Guardian.Crush(p, plugin);
 				}
@@ -48,7 +49,22 @@ public class Guardian {
 				if (upgrade.equals(3)) {
 					Guardian.Pound(p, plugin);
 				}
-				if (c) {cooldown = 12;}
+				cooldown = 12;
+			}
+			if (spell.equals(1)) {
+				if (upgrade.equals(0)) {
+					Guardian.Spines(p, plugin);
+				}
+				if (upgrade.equals(1)) {
+					Guardian.Spirit(p, plugin);
+				}
+				if (upgrade.equals(2)) {
+					Guardian.Kinetic(p, plugin);
+				}
+				if (upgrade.equals(3)) {
+					Guardian.Mirror(p, plugin);
+				}
+				cooldown = 12;
 			}
 			if (spell.equals(2)) {
 				if (upgrade.equals(0)) {
@@ -63,26 +79,11 @@ public class Guardian {
 				if (upgrade.equals(3)) {
 					Guardian.Call(p, plugin);
 				}
-				if (c) {cooldown = 12;}
+				cooldown = 12;
 			}
 			if (spell.equals(3)) {
-				if (upgrade.equals(0)) {
-					Guardian.Spines(p, plugin);
-				}
-				if (upgrade.equals(1)) {
-					Guardian.Spirit(p, plugin);
-				}
-				if (upgrade.equals(2)) {
-					Guardian.Kinetic(p, plugin);
-				}
-				if (upgrade.equals(3)) {
-					Guardian.Mirror(p, plugin);
-				}
-				if (c) {cooldown = 20;}
-			}
-			if (spell.equals(4)) {
 				Guardian.Totem(p, plugin, upgrade);
-				if (c) {cooldown = 20;}
+				cooldown = 20;
 			}
 		}
 		return cooldown;
@@ -207,28 +208,49 @@ public class Guardian {
 	}
 	
 	public static void Crush(Player p, Plugin plugin) {
-		// Copied from Freezing, make these start from ground and go 1-2 blocks up
-		int range = 10;
-		int step = 2;
-		RayTrace eye = new RayTrace(p, range, step);
 		World w = p.getWorld();
-		for (int count = 0; count < 5; count++) {
+		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 3));
+		w.playSound(p.getLocation(), Sound.ENTITY_WITHER_AMBIENT, 1, 1);
+
+		int range = 7, count = 0, magnitude = 1;
+		Location start = p.getLocation();
+		Vector dir = p.getLocation().getDirection().setY(0).normalize().multiply(0.8);
+		Vector norm = new Vector(-dir.getZ(), 0, dir.getX()).multiply(0.8);
+		RayTrace eye = new RayTrace(start, dir, range, magnitude);
+		for (count = 0; count < range; count += magnitude) {
+			Location center = eye.next().clone();
+			Location groundLoc = Geometry.getGroundLocation(center, 6);
+			List<Location> perpLine = Geometry.getPerpendicularLine(groundLoc, norm, 4);
+			final int c = count;
 			new BukkitRunnable() {
+				@Override
 				public void run() {
-					Location l = eye.next();
-					int down = 0;
-					while (l.getBlock().getType().equals(Material.AIR) && down < 3) {
-						l.add(0, -1, 0);
-						down++;
+					for (Location l : perpLine) {
+						p.getWorld().spawnParticle(Particle.TOWN_AURA, l, 4, 0.1, 0, 0.1, 0);
+						Utils.applyNearby(center, p, c, 1, c, (LivingEntity le) -> {
+							le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 1));
+						});
 					}
-					l.add(0,1,0);
-					Utils.applyNearby(l, p, 1, 1, 1, (LivingEntity le) -> {
-						le.damage(6, p);
-						le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 2));
-					});
-					w.playEffect(l, Effect.STEP_SOUND, Material.GRASS);
+					if (c % 2 == 0) {
+						w.playSound(start, Sound.BLOCK_GRAVEL_HIT, 1, 1);
+					}
 				}
-			}.runTaskLater(plugin, count*3);
+			}.runTaskLater(plugin, count);
+
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					for (Location l : perpLine) {
+						p.getWorld().spawnParticle(Particle.CRIT, l, 4, 0.1, 0, 0.1, 0);
+						Utils.applyNearby(center, p, c, 1, c, (LivingEntity le) -> {
+							le.damage(4, p);
+						});
+					}
+					if (c % 2 == 0) {
+						w.playSound(start, Sound.BLOCK_GRAVEL_BREAK, 1, 1);
+					}
+				}
+			}.runTaskLater(plugin, 15+count);
 		}
 	}
 	public static void Smash(Player p, Plugin plugin) {

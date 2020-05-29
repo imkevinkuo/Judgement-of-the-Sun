@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.gmail.kvkkuo.JotS.classes.Witherknight;
+import com.gmail.kvkkuo.JotS.classes.*;
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -29,9 +29,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.gmail.kvkkuo.JotS.JotS;
-import com.gmail.kvkkuo.JotS.classes.Assassin;
-import com.gmail.kvkkuo.JotS.classes.Duelist;
-import com.gmail.kvkkuo.JotS.classes.Paladin;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -255,12 +252,9 @@ public class DamageListener implements Listener {
     	}
     	if (proj.getType().equals(EntityType.FIREBALL) && proj.hasMetadata("shot")) {
     		Fireball fire = (Fireball) proj;
+    		Player p = (Player) fire.getShooter();
     		e.setCancelled(true);
-    		fire.getWorld().spawnParticle(Particle.FLAME, e.getLocation(), 20, 0, 0, 0, 0.2);
-    		fire.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, e.getLocation(), 1, 0, 0, 0);
-    		Utils.applyNearby(fire.getLocation(), (LivingEntity) fire.getShooter(), 4, 4, 4, (LivingEntity le) -> {
-    			le.setFireTicks(80);
-    		});
+			Raider.detonate(fire, p, plugin);
     	}
     }
     

@@ -191,10 +191,12 @@ public class Assassin {
 	public static void Rush(Player p, Plugin plugin, int type) {
 		Location initial = p.getLocation();
 		p.setVelocity(new Vector(0, 0.5, 0));
-		Vector v = p.getLocation().getDirection().multiply(4).setY(0);
+		Vector v = p.getLocation().getDirection().multiply(3.5).setY(0);
 		new BukkitRunnable() {
 			public void run() {
+				p.getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
 				p.setVelocity(v);
+				p.setInvulnerable(true);
 			}
 		}.runTaskLater(plugin, 2);
 		BukkitTask bt = new BukkitRunnable() {
@@ -226,6 +228,7 @@ public class Assassin {
 		}.runTaskTimer(plugin, 3, 1);
 		new BukkitRunnable() {
 			public void run() {
+				p.setInvulnerable(false);
 				bt.cancel();
 			}
 		}.runTaskLater(plugin, 10);

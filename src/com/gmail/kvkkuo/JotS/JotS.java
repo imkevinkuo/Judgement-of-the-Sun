@@ -28,7 +28,7 @@ public class JotS extends JavaPlugin {
 			Material.IRON_SWORD,
 			Material.BLAZE_POWDER,
 			Material.FEATHER,
-			Material.CLAY,
+			Material.CLAY_BALL,
 			Material.BONE,
 			Material.GLOWSTONE_DUST
 	};
@@ -86,6 +86,7 @@ public class JotS extends JavaPlugin {
     @Override
     public void onDisable() {
     	for (Player p : Bukkit.getOnlinePlayers()) {
+    		leaveServer(p);
     	    p.kickPlayer(ChatColor.RED+"Restarting");
     	}
     }
