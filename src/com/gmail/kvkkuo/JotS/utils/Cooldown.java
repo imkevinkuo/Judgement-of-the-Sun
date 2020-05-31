@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -18,12 +19,7 @@ public class Cooldown extends BukkitRunnable {
 	 
 	public void run() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (p.hasMetadata("illusion") || p.hasMetadata("deception")) {
-				p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, p.getEyeLocation(), 12, 0.5, 0.5, 0.5, 0);
-			}
-			if (p.hasMetadata("rage") || p.hasMetadata("fury")) {
-				p.getWorld().spawnParticle(Particle.FLAME, p.getEyeLocation(), 12, 0.5, 0.5, 0.5, 0);
-			}
+			World w = p.getWorld();
 			if (p.hasMetadata("nofall") && p.isOnGround()) {
 				p.removeMetadata("nofall", plugin);
 			}

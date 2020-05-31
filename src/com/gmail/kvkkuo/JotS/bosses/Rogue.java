@@ -118,7 +118,7 @@ public class Rogue extends Boss {
 					    			le.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 80, 0));
 			    				}
 			    			}
-			    			FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, true);
+			    			FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, false, false, false);
 				    		item.remove();
 				    		this.cancel();
 		    			}
@@ -132,7 +132,7 @@ public class Rogue extends Boss {
 			    			le.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 80, 0));
 	    				}
 	    			}
-		    		FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, true);
+		    		FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, false, false, false);
 		    		item.remove();
 		    		this.cancel();
 		    	}
@@ -141,7 +141,7 @@ public class Rogue extends Boss {
     }
     
     public static void Step(LivingEntity boss, Player p, Plugin plugin) {
-    	FireworkPlayer.fire(boss.getLocation(), Type.BURST, Color.BLACK, true);
+    	FireworkPlayer.fire(boss.getLocation(), Type.BURST, Color.BLACK, false, false, false);
 		Location l = Geometry.getBlockRelative(p.getLocation(), -5, 0, 0);
 		while (!l.getBlock().isPassable()) {
 			l.setY(l.getY() + 1);

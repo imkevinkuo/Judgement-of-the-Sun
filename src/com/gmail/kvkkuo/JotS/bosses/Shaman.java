@@ -79,7 +79,7 @@ public class Shaman extends Boss {
 		Player p = Utils.getNearestPlayer(zk.getLocation(), 12);
     	if (p != null) {
 			p.damage(4, zk);
-			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.WHITE, false);
+			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.WHITE, false, false, false);
 		}
     }
     

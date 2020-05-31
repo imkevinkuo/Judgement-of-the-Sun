@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Stack;
 import java.util.UUID;
 
 import com.gmail.kvkkuo.JotS.utils.Geometry;
@@ -17,7 +16,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -42,8 +40,7 @@ public class Duelist {
 		PotionEffectType.HUNGER, PotionEffectType.POISON,
 		PotionEffectType.SLOW, PotionEffectType.CONFUSION
 	};
-	
-	private static BlockData prisdata = Material.PRISMARINE.createBlockData();
+
 	private static PotionEffect spearSlow = new PotionEffect(PotionEffectType.SLOW, 80, 2);
 	private static PotionEffect duelistRegen = new PotionEffect(PotionEffectType.REGENERATION, 40, 2);
 	private static PotionEffect duelistSpeed = new PotionEffect(PotionEffectType.SPEED, 40, 2);
@@ -60,7 +57,7 @@ public class Duelist {
 	private static DustOptions pinkDust = new DustOptions(Color.fromRGB(255, 100, 200), 1);
 	private static DustOptions redDust = new DustOptions(Color.fromRGB(255, 0, 0), 1);
 	
-	public static HashMap<UUID, Stack<Item>> shields = new HashMap<>();
+	public static HashMap<UUID, List<Item>> shields = new HashMap<>();
 
 	public static Integer cast(Player p, Integer spell, Integer cooldown, Integer upgrade, Plugin plugin) {
 		if (cooldown <= 0) {
@@ -216,6 +213,7 @@ public class Duelist {
 		
 		int range = 9, count = 0, magnitude = 1;
 		Vector dir = p.getLocation().getDirection().setY(0).normalize().multiply(0.8);
+		Vector norm = new Vector(-dir.getZ(), 0, dir.getX()).multiply(0.8);
 		RayTrace eye = new RayTrace(p.getLocation(), dir, range, magnitude);
 		for (count = 0; count < range; count+=magnitude) {
 			Location center = eye.next().clone();
@@ -230,7 +228,7 @@ public class Duelist {
 					if (c%3 == 0) {
 						w.playSound(groundLoc, Sound.BLOCK_WOOD_BREAK, 1, 1);
 					}
-					for (Location l: Geometry.getPerpendicularLine(groundLoc, dir, c)) {
+					for (Location l: Geometry.getLine(groundLoc, norm, c)) {
 						p.getWorld().spawnParticle(Particle.BLOCK_CRACK, l, 2, 0, 0, 0, 0, md);
 					}
 				}
@@ -306,17 +304,7 @@ public class Duelist {
 	}
 	private static void Rage(Player p, Plugin plugin) {
 		p.setMetadata("rage", new FixedMetadataValue(plugin, 0));
-		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
-		p.getWorld().spawnParticle(Particle.FLAME, p.getEyeLocation(), 20, 1, 1, 1, 0);
-		new BukkitRunnable() { // Combo timer
-			@Override
-			public void run() {
-				if (p.getMetadata("rage").get(0).asInt() == 0) {
-					p.sendMessage("Your Smoldering Rage fades.");
-					p.removeMetadata("rage", plugin);
-				}
-			}
-		}.runTaskLater(plugin, 20);
+		stackRage(p, plugin);
 		new BukkitRunnable() { // Buff timeout
 			@Override
 			public void run() {
@@ -329,6 +317,8 @@ public class Duelist {
 	}
 	public static int stackRage(Player pd, Plugin plugin) {
 		// Returns the amount of rage = bonus damage
+		pd.getWorld().playSound(pd.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
+		pd.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, pd.getEyeLocation(), 10, 1, 1, 1, 0);
 		int rage = pd.getMetadata("rage").get(0).asInt() + 1;
 		pd.setMetadata("rage", new FixedMetadataValue(plugin, rage));
 		new BukkitRunnable() { // Reset buff timeout
@@ -340,7 +330,6 @@ public class Duelist {
 				}
 			}
 		}.runTaskLater(plugin, 20);
-		pd.getWorld().spawnParticle(Particle.FLAME, pd.getEyeLocation(), 10, 1, 1, 1, 0);
 		return rage;
 	}
 	private static void Resolve(Player p, Plugin plugin) {
@@ -351,10 +340,17 @@ public class Duelist {
 	private static void Fury(Player p, Plugin plugin) {
 		p.setMetadata("fury", new FixedMetadataValue(plugin, true));
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_AMBIENT, 1, 1);
-		p.getWorld().spawnParticle(Particle.LAVA, p.getLocation(), 20, 1, 0, 1, 0.1);
+		BukkitTask task = new BukkitRunnable() {
+			@Override
+			public void run() {
+				p.getWorld().spawnParticle(Particle.LAVA, p.getLocation(), 20, 1, 1, 1, 0.1);
+			}
+		}.runTaskTimer(plugin, 0, 5);
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				task.cancel();
 				p.sendMessage("Your Tempered Fury fades.");
 				p.removeMetadata("fury", plugin);
 			}
@@ -423,37 +419,13 @@ public class Duelist {
 	}
 	
 	private static void Spellshield(Player p, Plugin plugin, int upgrade) {
-		p.setMetadata("spellshield", new FixedMetadataValue(plugin, upgrade));
-		double h = p.getEyeHeight()/2;
 		UUID uid = p.getUniqueId();
-		shields.put(uid, new Stack<Item>());
-		for (int i = 0; i < 3; i ++) {
-			int in = i;
-			ItemStack is = new ItemStack(Material.PRISMARINE_SHARD);
-			ItemMeta im = is.getItemMeta();
-			im.setDisplayName("guard" + i + p.getName());
-			is.setItemMeta(im);
-			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
-			item.setPickupDelay(Integer.MAX_VALUE);
-			item.setGravity(false);
-			shields.get(uid).push(item);
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					if (item.isDead()) {this.cancel();}
-					Location to = Geometry.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/3) + (double) item.getTicksLived()/12);
-					Location from = item.getLocation();
-					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
-				}
-			}.runTaskTimer(plugin, 1, 1);
-		}
+		p.setMetadata("spellshield", new FixedMetadataValue(plugin, upgrade));
+		shields.put(uid, Utils.rotateItems(p, Material.PRISMARINE_SHARD, "guard",160, p.getEyeHeight()/2, plugin));
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				for (Item pm:shields.get(uid)) {
-					p.getWorld().spawnParticle(Particle.BLOCK_DUST, pm.getLocation(), 20, 0, 0, 0, 0.1, prisdata);
-					pm.remove();
-				}
 				p.removeMetadata("spellshield", plugin);
 				shields.remove(uid);
 			}
@@ -493,10 +465,10 @@ public class Duelist {
 	}
 	public static void consumeShield(Player p, Plugin plugin) {
 		if (shields.containsKey(p.getUniqueId())) {
-			Stack<Item> blocks = shields.get(p.getUniqueId());
+			List<Item> blocks = shields.get(p.getUniqueId());
 			if (blocks.size() > 0) {
-				Item pm = blocks.pop();
-				p.getWorld().spawnParticle(Particle.BLOCK_DUST, pm.getLocation(), 20, 0, 0, 0, 0.1, prisdata);
+				Item pm = blocks.remove(0);
+				p.getWorld().spawnParticle(Particle.ITEM_CRACK, pm.getLocation(), 20, 0, 0, 0, 0.1, new ItemStack(Material.PRISMARINE_SHARD));
 				pm.remove();
 			}
 			if (blocks.size() == 0) {

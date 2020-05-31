@@ -29,11 +29,11 @@ public class Geometry {
         return l;
     }
 
-    public static List<Location> getPerpendicularLine(Location l, Vector norm, int range) {
+    public static List<Location> getLine(Location l, Vector dir, int range) {
         List<Location> line = new ArrayList<>();
         line.add(l);
         for (int i = 0; i < range; i++) {
-            Vector newNorm = norm.clone().multiply(i+1);
+            Vector newNorm = dir.clone().multiply(i+1);
             line.add(l.clone().add(newNorm));
             line.add(l.clone().subtract(newNorm));
         }

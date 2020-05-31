@@ -92,11 +92,11 @@ public class Witherknight {
 		Vector dir = p.getLocation().getDirection().setY(0).normalize().multiply(0.8);
 		Vector norm = new Vector(-dir.getZ(), 0, dir.getX()).multiply(0.8);
 		RayTrace eye = new RayTrace(start, dir, range, magnitude);
-		for (int i = 0; i < 3; i++) {
-			for (count = 0; count < range; count += magnitude) {
-				Location center = eye.next().clone();
-				Location groundLoc = Geometry.getGroundLocation(center, 6);
-				List<Location> perpLine = Geometry.getPerpendicularLine(groundLoc, norm, count);
+		for (count = 0; count < range; count += magnitude) {
+			Location center = eye.next().clone();
+			Location groundLoc = Geometry.getGroundLocation(center, 6);
+			List<Location> perpLine = Geometry.getLine(groundLoc, norm, count);
+			for (int i = 0; i < 3; i++) {
 				final int finalI = i;
 				final int c = count;
 				new BukkitRunnable() {
@@ -109,8 +109,7 @@ public class Witherknight {
 									le.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 1));
 								});
 							}
-						}
-						else {
+						} else {
 							for (Location l : perpLine) {
 								Utils.applyNearby(center, p, 1, 1, 1, (LivingEntity le) -> {
 									le.damage(2, p);
@@ -123,7 +122,7 @@ public class Witherknight {
 							w.playSound(start, Sound.ENTITY_WITHER_SHOOT, 1, 1);
 						}
 					}
-				}.runTaskLater(plugin, 15*i + count);
+				}.runTaskLater(plugin, 15 * i + count);
 			}
 		}
 	}
@@ -472,7 +471,7 @@ public class Witherknight {
 					// Teleport player
 					p.sendMessage("Your Shadow " + TRAP_NAMES[t] + " has been triggered!");
 					trap.getWorld().playSound(trap.getLocation(), Sound.ENTITY_CREEPER_HURT, 5, 1);
-					FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, Color.SILVER, false);
+					FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, Color.SILVER, false, false, false);
 					Location target = trap.getLocation();
 					trap.remove();
 
@@ -481,7 +480,7 @@ public class Witherknight {
 						int in = i;
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
 							public void run() {
-								FireworkPlayer.fire(target, Type.BURST, Color.GRAY, false);
+								FireworkPlayer.fire(target, Type.BURST, Color.GRAY, false, false, false);
 								if (in == 4) {
 									p.teleport(target);
 								} else {
@@ -499,7 +498,7 @@ public class Witherknight {
 			public void run() {
 				if (!bt.isCancelled()) {
 					bt.cancel();
-					FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, Color.SILVER, false);
+					FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, Color.SILVER, false, false, false);
 					trap.remove();
 				}
 			}

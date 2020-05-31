@@ -13,8 +13,8 @@ commands:
       usage: /boss
       permission: JotS.boss
       permission-message: You don't have permission.
-   particle:
-      description: Testing out particles.
-      usage: /particle name count offsetX offsetY offsetZ speed
-      permission: JotS.particle
+   play:
+      description: Test particles, fireworks, and sounds.
+      usage: /play <particle/firework/sound>
+      permission: JotS.play
       permission-message: You don't have permission.

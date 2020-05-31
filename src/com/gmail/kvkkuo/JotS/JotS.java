@@ -6,7 +6,7 @@ import java.util.*;
 
 import com.gmail.kvkkuo.JotS.bosses.Boss;
 import com.gmail.kvkkuo.JotS.commands.BossCommand;
-import com.gmail.kvkkuo.JotS.commands.ParticleCommand;
+import com.gmail.kvkkuo.JotS.commands.PlayCommand;
 import com.gmail.kvkkuo.JotS.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -56,7 +56,7 @@ public class JotS extends JavaPlugin {
     @Override
     public void onEnable() {
     	//
-		getCommand("particle").setExecutor(new ParticleCommand(this));
+		getCommand("play").setExecutor(new PlayCommand(this));
     	// Bosses
 		getServer().getPluginManager().registerEvents(bossDamage, this);
 		getCommand("boss").setExecutor(new BossCommand(this));

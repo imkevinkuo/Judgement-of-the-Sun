@@ -113,7 +113,7 @@ public class Assassin {
 						le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 3));
 					});
 					item.getWorld().playSound(item.getLocation(), Sound.BLOCK_SAND_BREAK, 1, 1);
-					FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, true);
+					FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, false, false, false);
 					item.remove();
 					this.cancel();
 				}
@@ -177,10 +177,11 @@ public class Assassin {
 			public void run() {
 				if (item.isOnGround()) {
 					Utils.applyNearby(item.getLocation(), null, 4, 4, 4, (LivingEntity le) -> {
-						le.setVelocity(le.getEyeLocation().subtract(item.getLocation()).toVector().normalize());
+						le.setVelocity(le.getEyeLocation().subtract(item.getLocation()).toVector().normalize().multiply(2));
 					});
 					item.getWorld().playSound(item.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 5, 1);
-					FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, true);
+					FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GRAY, false, false ,false);
+					p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, 1, 0, 0, 0, 1);
 					item.remove();
 					this.cancel();
 				}
@@ -300,12 +301,21 @@ public class Assassin {
 			p.getWorld().spawnParticle(Particle.BLOCK_CRACK, loc, 1, 0, 0, 0, 1, md);
 		}
 		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (p.hasMetadata("illusion")) {
+					p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, p.getEyeLocation(), 12, 0.5, 0.5, 0.5, 0);
+				}
+			}
+		}.runTaskTimer(plugin, 0, 5);
+		new BukkitRunnable() {
 			public void run() {
 				p.removeMetadata("illusion", plugin);
 			}
 		}.runTaskLater(plugin, 100);
 	}
 	public static void IllusionT(Player p, Plugin plugin) {
+		p.removeMetadata("illusion", plugin);
 		Stealth(p, plugin, 80);
 		Utils.applyNearby(p.getLocation(), p, 3, 3, 3, (LivingEntity le) -> {
 			le.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 0));
@@ -315,9 +325,16 @@ public class Assassin {
 		p.setMetadata("deception", new FixedMetadataValue(plugin, true));
 		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 1, 1);
 		for (Location loc: Geometry.getCirclePoints(p.getLocation(), Geometry.Plane.XZ, 2, 20)) {
-			BlockData md = Material.STONE.createBlockData();
-			p.getWorld().spawnParticle(Particle.BLOCK_CRACK, loc, 1, 0, 0, 0, 1, md);
+			p.getWorld().spawnParticle(Particle.BLOCK_CRACK, loc, 1, 0, 0, 0, 1, Material.STONE.createBlockData());
 		}
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (p.hasMetadata("deception")) {
+					p.getWorld().spawnParticle(Particle.SMOKE_NORMAL, p.getEyeLocation(), 12, 0.5, 0.5, 0.5, 0);
+				}
+			}
+		}.runTaskTimer(plugin, 0, 5);
 		new BukkitRunnable() {
 			public void run() {
 				p.removeMetadata("deception", plugin);
@@ -325,6 +342,7 @@ public class Assassin {
 		}.runTaskLater(plugin, 100);
 	}
 	public static void DeceptionT(Player p, Plugin plugin) {
+		p.removeMetadata("deception", plugin);
 		Stealth(p, plugin, 80);
 		Utils.applyNearby(p.getLocation(), p, 3, 3, 3, (LivingEntity le) -> {
 			le.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 80, 0));
@@ -349,7 +367,7 @@ public class Assassin {
 		LivingEntity le = Geometry.getCrosshair(p);
 		if (le != null) {
 			Location ebe = le.getLocation().add(le.getLocation().getDirection().setY(0).multiply(-1).normalize());
-			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
+			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, false, false, false);
 			ebe.setYaw(le.getLocation().getYaw());
 			ebe.setPitch(le.getLocation().getPitch());
 			p.teleport(ebe);
@@ -362,14 +380,14 @@ public class Assassin {
 	}
 	public static boolean Mark(Player p) {
 		if (mark.get(p.getUniqueId()) == null) {
-			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
+			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, false, false, false);
 			mark.put(p.getUniqueId(), p.getLocation());
 			p.sendMessage("You set an Umbra Mark at your location.");
 			return false;
 		}
 		else {
 			if (mark.get(p.getUniqueId()).distance(p.getLocation()) <= 20) {
-				FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
+				FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, false, false, false);
 				p.teleport(mark.get(p.getUniqueId()));
 				p.sendMessage("You return to your Umbra Mark.");
 				mark.remove(p.getUniqueId());
@@ -384,8 +402,8 @@ public class Assassin {
 	public static boolean Bind(Player p, Plugin plugin) {
 		Entity e = Geometry.getCrosshair(p);
 		if (e != null) {
-			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
-			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
+			FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, false, false, false);
+			FireworkPlayer.fire(e.getLocation(), Type.BURST, Color.BLACK, false, false, false);
 			BukkitTask bt = new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -399,7 +417,7 @@ public class Assassin {
 						ebe.setYaw(p.getLocation().getYaw());
 						ebe.setPitch(p.getLocation().getPitch());
 						p.teleport(ebe);
-						FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, true);
+						FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.BLACK, false, false, false);
 					}
 				}
 			}.runTaskTimer(plugin, 1, 10);
@@ -416,7 +434,7 @@ public class Assassin {
 		return true;
 	}
 	public static void Soul(Player p, Plugin plugin) {
-		FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.WHITE, true);
+		FireworkPlayer.fire(p.getLocation(), Type.BURST, Color.WHITE, false, false, false);
 		p.getWorld().playSound(p.getLocation(), Sound.ENTITY_WITHER_SHOOT, 1, 1);
 		p.setMetadata("soul", new FixedMetadataValue(plugin, true));
 		p.setGlowing(true);

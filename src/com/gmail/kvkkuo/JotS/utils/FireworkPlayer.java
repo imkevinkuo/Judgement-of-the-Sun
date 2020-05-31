@@ -14,17 +14,25 @@ import org.bukkit.Location;
 
 public class FireworkPlayer {
     
-    public static void fire(Location l, Type t, Color c, Boolean trail) {
+    public static void fire(Location l, Type t, Color c, boolean trail, boolean fade, boolean flicker) {
     	Location loc = l.clone().add(0,  -0.2, 0);
     	Firework firework = (Firework) l.getWorld().spawnEntity(loc, EntityType.FIREWORK);
         FireworkMeta meta = firework.getFireworkMeta();
-        meta.setPower(1);
+
+        FireworkEffect.Builder b = FireworkEffect.builder().with(t).withColor(c);
 		if (trail) {
-			meta.addEffect(FireworkEffect.builder().with(t).withColor(c).withTrail().build());
+			b.withTrail();
 		}
-		if (!trail) {
-			meta.addEffect(FireworkEffect.builder().with(t).withColor(c).build());
+		if (fade) {
+			b.withFade();
 		}
+		if (flicker) {
+			b.withFlicker();
+		}
+		meta.addEffect(b.build());
+		meta.setPower(0);
+
+		firework.setSilent(true);
 		firework.setFireworkMeta(meta);
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(JotS.getPlugin(JotS.class), new Runnable() {
             public void run() {

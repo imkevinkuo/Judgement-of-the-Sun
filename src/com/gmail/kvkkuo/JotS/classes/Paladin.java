@@ -129,7 +129,7 @@ public class Paladin {
 							p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, ray.next(), 1, 0, 0, 0, 0.1);
 						}
 						else {
-							FireworkPlayer.fire(end, Type.BURST, Color.WHITE, false);
+							FireworkPlayer.fire(end, Type.BURST, Color.WHITE, false, false, false);
 							Utils.applyNearby(end, p, 3, 3, 3, (LivingEntity le) -> {
 								Utils.magicDamage(p, le, 4, plugin);
 							});
@@ -250,7 +250,7 @@ public class Paladin {
 							le.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 80, 3));
 							Utils.magicDamage(p, le, 6, plugin);
 						});
-						FireworkPlayer.fire(item.getLocation(), Type.BALL, Color.WHITE, false);
+						FireworkPlayer.fire(item.getLocation(), Type.BALL, Color.WHITE, false, false, false);
 						trail.cancel();
 						item.remove();
 					}
@@ -602,21 +602,21 @@ public class Paladin {
 	
 	public static void Haste(Player p) {
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 120, 4));
-		FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.WHITE, false);
+		FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.WHITE, false, false, false);
 	}
 	public static void Augment(Player p) {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 120, 0));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
-			FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.MAROON, false);
+			FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.MAROON, false, false, false);
 	}
 	public static void Recovery(Player p) {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 120, 1));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 0));
-			FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.FUCHSIA, true);
+			FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.FUCHSIA, false, false, false);
 	}
 	public static void Redemption(Player p, Plugin plugin) {
 			p.setMetadata("redemption", new FixedMetadataValue(plugin, true));
-			FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.YELLOW, false);
+			FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.YELLOW, false, false, false);
 			new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -639,7 +639,7 @@ public class Paladin {
 			@Override
 			public void run() {
 				p.setGlowing(false);
-				FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.YELLOW, true);
+				FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.YELLOW, false, false, false);
 				for (Entity e:p.getNearbyEntities(2, 2, 2)) {
 					e.setVelocity(e.getLocation().subtract(p.getLocation()).toVector().normalize());
 				}

@@ -11,26 +11,22 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.ShulkerBullet;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.gmail.kvkkuo.JotS.JotS;
 import com.gmail.kvkkuo.JotS.utils.Utils;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class DamageListener implements Listener {
 	
@@ -57,6 +53,19 @@ public class DamageListener implements Listener {
     	Entity d = event.getDamager();
     	Entity v = event.getEntity();
     	if (v instanceof LivingEntity) {
+			// Fireworks
+			if (d.getType().equals(EntityType.FIREWORK)) {
+				event.setCancelled(true);
+				return;
+			}
+			// Wither skulls
+			if (d instanceof WitherSkull) {
+				if (v.equals(((WitherSkull) d).getShooter())) {
+					event.setCancelled(true);
+					return;
+				}
+			}
+
     		LivingEntity ev = (LivingEntity) v;
 	    	if (d instanceof Player) { // Player-offensive melee abilities
 	    		Player pd = (Player) d;
@@ -103,11 +112,9 @@ public class DamageListener implements Listener {
 				Player pv = (Player) v;
 				// Assassin stealth
 				if (pv.hasMetadata("illusion")) {
-					pv.removeMetadata("illusion", plugin);
 					Assassin.IllusionT(pv, plugin);
 				}
 				else if (pv.hasMetadata("deception")) {
-					pv.removeMetadata("deception", plugin);
 					Assassin.DeceptionT(pv, plugin);
 				}
 				else if (pv.hasMetadata("soul")) {
@@ -118,6 +125,10 @@ public class DamageListener implements Listener {
 					if (d instanceof LivingEntity) {
 						((LivingEntity) d).damage(0.5, v);
 					}
+				}
+				if (pv.hasMetadata("starve")) {
+					double newDamage = Guardian.StarvingTrigger(pv, event.getDamage());
+					event.setDamage(newDamage);
 				}
 				// Paladin Divine Fire
 				if (pv.hasMetadata("divine")) {
@@ -132,20 +143,6 @@ public class DamageListener implements Listener {
 				if (d.hasMetadata("ice")) {
 					ev.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
 					Utils.magicDamage((LivingEntity) ((Snowball)d).getShooter(), ev, 4, plugin);
-				}
-			}
-			// Shulker bullets
-			if (d instanceof ShulkerBullet) {
-				event.setCancelled(true);
-			}
-			// Fireworks
-			if (d.getType().equals(EntityType.FIREWORK)) {
-				event.setCancelled(true);
-			}
-			// Wither skulls
-			if (d instanceof WitherSkull) {
-				if (v.equals(((WitherSkull) d).getShooter())) {
-					event.setCancelled(true);
 				}
 			}
     	}

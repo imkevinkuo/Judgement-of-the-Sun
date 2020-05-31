@@ -229,7 +229,7 @@ public class Ninja extends Boss {
 			boss.setNoDamageTicks(100);
 			boss.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 200, 8));
 			boss.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 200, 1));
-			FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false);
+			FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false, false, false);
 			// Creating slice
 			Location l1 = boss.getEyeLocation();
 			Vector direction = p.getEyeLocation().toVector().subtract(l1.toVector()).normalize();
@@ -263,7 +263,7 @@ public class Ninja extends Boss {
 					boss.setNoDamageTicks(0);
 					boss.removePotionEffect(PotionEffectType.SLOW);
 					boss.removePotionEffect(PotionEffectType.INVISIBILITY);
-					FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false);
+					FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false, false, false);
 				}
 			}, count);
 		}
@@ -341,13 +341,13 @@ public class Ninja extends Boss {
 					boss.getEquipment().clear();
 					boss.setNoDamageTicks(200);
 					boss.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 200, 0));
-					FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false);
+					FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false, false, false);
 				}
 			},	(30));
 			for (int i = 1; i < 8; i++) {
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 					public void run() {
-						FireworkPlayer.fire(boss.getEyeLocation(), Type.BURST, Color.WHITE, false);
+						FireworkPlayer.fire(boss.getEyeLocation(), Type.BURST, Color.WHITE, false, false, false);
 						// Creating slice
 						Location l1 = boss.getEyeLocation();
 						Vector direction = p.getEyeLocation().toVector().subtract(l1.toVector()).normalize().multiply(0.8);
@@ -388,7 +388,7 @@ public class Ninja extends Boss {
 					boss.setNoDamageTicks(0);
 					boss.removePotionEffect(PotionEffectType.SLOW);
 					boss.removePotionEffect(PotionEffectType.INVISIBILITY);
-					FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false);
+					FireworkPlayer.fire(boss.getEyeLocation(), Type.BALL, Color.WHITE, false, false, false);
 				}
 			},	200);
 		}

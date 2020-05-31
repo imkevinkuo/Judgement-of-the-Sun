@@ -310,7 +310,7 @@ public class Hunter extends Boss {
 							bt.cancel();
 						}
 					}, 200);
-					FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GREEN, true);
+					FireworkPlayer.fire(item.getLocation(), Type.BALL_LARGE, Color.GREEN, false, false, false);
 					item.remove();
 					this.cancel();
 				}
@@ -337,7 +337,7 @@ public class Hunter extends Boss {
 						le.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 300, 6));
 						le.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 80, 149));
 					});
-		    		FireworkPlayer.fire(item.getLocation(), Type.BALL, Color.GRAY, true);
+		    		FireworkPlayer.fire(item.getLocation(), Type.BALL, Color.GRAY, false, false, false);
 		    		item.remove();
 		    		this.cancel();
 		    	}
