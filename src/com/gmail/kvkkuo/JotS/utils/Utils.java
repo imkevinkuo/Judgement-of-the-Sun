@@ -122,7 +122,7 @@ public class Utils {
 	}
 
 	// Applies to LivingEntities besides ex.
-	public static void applyNearby(Location l, LivingEntity ex, int x, int y, int z, applyNearbyOperator op) {
+	public static void applyNearby(Location l, LivingEntity ex, double x, double y, double z, applyNearbyOperator op) {
 		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
 			if (!e.equals(ex) && e instanceof LivingEntity) {
 				op.applyNearby((LivingEntity) e);
@@ -134,7 +134,7 @@ public class Utils {
 		applyNearbyPlayers(l, r, r, r, op);
 	}
 
-	public static void applyNearbyPlayers(Location l, int x, int y, int z, applyNearbyOperator op) {
+	public static void applyNearbyPlayers(Location l, double x, double y, double z, applyNearbyOperator op) {
 		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
 			if (e instanceof Player) {
 				op.applyNearby((LivingEntity) e);
@@ -142,7 +142,7 @@ public class Utils {
 		}
 	}
 
-	public static LivingEntity getNearestEntity(Location l, ArrayList<LivingEntity> ex, int x, int y, int z) {
+	public static LivingEntity getNearestEntity(Location l, ArrayList<LivingEntity> ex, double x, double y, double z) {
 		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
 			if (!ex.contains(e) && e instanceof LivingEntity) {
 				return (LivingEntity) e;
@@ -155,7 +155,7 @@ public class Utils {
 		return getNearestPlayer(l, r, r, r);
 	}
 
-	public static Player getNearestPlayer(Location l, int x, int y, int z) {
+	public static Player getNearestPlayer(Location l, double x, double y, double z) {
 		for (Entity e:l.getWorld().getNearbyEntities(l, x, y, z)) {
 			if (e instanceof Player) {
 				return (Player) e;

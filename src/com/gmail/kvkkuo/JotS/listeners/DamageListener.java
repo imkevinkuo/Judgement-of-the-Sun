@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -126,10 +127,6 @@ public class DamageListener implements Listener {
 						((LivingEntity) d).damage(0.5, v);
 					}
 				}
-				if (pv.hasMetadata("starve")) {
-					double newDamage = Guardian.StarvingTrigger(pv, event.getDamage());
-					event.setDamage(newDamage);
-				}
 				// Paladin Divine Fire
 				if (pv.hasMetadata("divine")) {
 					if (Paladin.consumeFire(pv, plugin)) {
@@ -173,6 +170,15 @@ public class DamageListener implements Listener {
 					event.setCancelled(true);
 					p.removeMetadata("redemption", plugin);
 					Paladin.Revive(p, plugin);
+				}
+				// Guardian Shields
+				if (p.hasMetadata("starve")) {
+					double newDamage = Guardian.StarvingTrigger(p, event.getDamage());
+					event.setDamage(newDamage);
+				}
+				if (p.hasMetadata("kinetic")) {
+					int kineticStacks = p.getMetadata("kinetic").get(0).asInt();
+					p.setMetadata("kinetic", new FixedMetadataValue(plugin, kineticStacks + 1));
 				}
 			}
 			// Witherknight passive

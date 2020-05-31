@@ -318,35 +318,58 @@ public class Guardian {
 	}
 	public static void Kinetic(Player p, Plugin plugin) {
 		FireworkPlayer.fire(p.getEyeLocation(), Type.BALL, Color.LIME, false, false, false);
-		p.setMetadata("kinetic", new FixedMetadataValue(plugin, true));
+		p.setMetadata("kinetic", new FixedMetadataValue(plugin, 3));
 		BukkitTask task = new BukkitRunnable() {
 			public void run() {
-				p.getWorld().spawnParticle(Particle.COMPOSTER, p.getLocation(), 10, 0.5, 0.5, 0.5, 0.1);
+				int k = p.getMetadata("kinetic").get(0).asInt();
+				double r = k / 4.0;
+				p.getWorld().spawnParticle(Particle.COMPOSTER, p.getLocation(), 4*k, r, r, r, 0.1);
 			}
 		}.runTaskTimer(plugin, 0, 5);
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				int k = p.getMetadata("kinetic").get(0).asInt();
+				double r = k / 2.0;
+				int layers = 6;
+				for (int i = 1; i <= layers; i++) {
+					float finalI = (float) i*k / layers;
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							float rho = finalI / 2;
+							int steps = (int) (4*finalI);
+							for (Location l: Geometry.getSpherePoints(p.getLocation(), rho, steps, steps)) {
+								p.getWorld().spawnParticle(Particle.COMPOSTER, l, 1, 0, 0, 0, 0.1);
+							}
+						}
+					}.runTaskLater(plugin, i);
+				}
+				Utils.applyNearby(p.getLocation(), p, r, r, r, (LivingEntity le) -> {
+					le.setVelocity(le.getLocation().toVector().subtract(p.getLocation().toVector()).normalize().multiply(r));
+					le.damage(k);
+				});
 				task.cancel();
 				p.removeMetadata("kinetic", plugin);
 				p.sendMessage("Your Kinetic Shield releases its energy.");
-				FireworkPlayer.fire(p.getEyeLocation(), Type.BALL, Color.LIME, false, false, false);
+				p.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, p.getLocation(), 1, 0, 0, 0, 0);
+				p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
 			}
 		}.runTaskLater(plugin, 200);
 	}
 	public static void Mirror(Player p, Plugin plugin) {
-		FireworkPlayer.fire(p.getEyeLocation(), Type.BALL, Color.GREEN, false, false, false);
+		FireworkPlayer.fire(p.getEyeLocation(), Type.BALL, Color.LIME, false, false, false);
 		List<Item> mirrors = Utils.rotateItems(p, Material.GREEN_STAINED_GLASS_PANE, "mirror",160, 3*p.getEyeHeight()/4, plugin);
 		List<Item> mirrors2 = Utils.rotateItems(p, Material.GREEN_STAINED_GLASS_PANE, "mirror",160, p.getEyeHeight()/4, plugin);
 		BukkitTask task = new BukkitRunnable() {
 			public void run() {
-				for (Entity e:p.getNearbyEntities(6, 6, 6)) {
+				for (Entity e:p.getNearbyEntities(3, 3, 3)) {
 					if (!(e instanceof LivingEntity) && !mirrors.contains(e) && !mirrors2.contains(e)) {
 						e.setVelocity(e.getLocation().toVector().subtract(p.getLocation().toVector()).multiply(0.3));
 					}
 				}
 			}
-		}.runTaskTimer(plugin, 0, 5);
+		}.runTaskTimer(plugin, 0, 2);
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -361,7 +384,7 @@ public class Guardian {
 		FireworkPlayer.fire(p.getLocation(), Type.BALL_LARGE, Color.GRAY, false, false, false);
 		for (Entity e:p.getNearbyEntities(4, 4, 4)) {
 			if (!e.equals(p) && e instanceof LivingEntity) {
-				((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 0));
+				((LivingEntity) e).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 2));
 			}
 		}
 	}
@@ -406,8 +429,9 @@ public class Guardian {
 		}
 	}
 	
-	public static boolean setTotem(Location loc, Material m, PotionEffect potionEffect, Plugin plugin) {
-		FireworkPlayer.fire(loc, Type.BALL_LARGE, Color.FUCHSIA, false, false, false);
+	public static boolean setTotem(Location loc, Material m, Color c, PotionEffect potionEffect, Plugin plugin) {
+		FireworkPlayer.fire(loc, Type.BALL_LARGE, c, false, false, false);
+		World w = loc.getWorld();
 		Location loc2 = loc.clone();
 		loc2.setY(loc.getY() + 1);
 		Block b1 = loc.getBlock();
@@ -417,11 +441,10 @@ public class Guardian {
 		if (b1.isEmpty() && b2.isEmpty()) {
 			b1.setType(m);
 			b2.setType(m);
-
 			BukkitTask task = new BukkitRunnable() {
 				public void run() {
+					loc.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, loc,32, 6, 2, 6, 0);
 					Utils.applyNearby(loc, null, 6, 6, 6, (LivingEntity le) -> {
-						loc.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, loc,16, 2, 2, 2, 0);
 						le.addPotionEffect(potionEffect);
 					});
 				}
@@ -432,6 +455,9 @@ public class Guardian {
 					task.cancel();
 					b1.setType(o1);
 					b2.setType(o2);
+					w.playSound(loc, Sound.BLOCK_GLASS_BREAK, 1, 1);
+					w.spawnParticle(Particle.BLOCK_CRACK, loc, 20, 0.1, 0.1, 0.1, 0, m.createBlockData());
+					w.spawnParticle(Particle.BLOCK_CRACK, loc2, 20, 0.1, 0.1, 0.1, 0, m.createBlockData());
 				}
 			}.runTaskLater(plugin, 200);
 
@@ -440,18 +466,22 @@ public class Guardian {
 		return false;
 	}
 	public static void Totem(Player p, Plugin plugin, int type) {
+		Color color = Color.FUCHSIA;
 		Material material = Material.PINK_STAINED_GLASS;
 		PotionEffect potionEffect = new PotionEffect(PotionEffectType.REGENERATION, 40, 1);
 
 		if (type == 1) {
+			color = Color.GRAY;
 			material = Material.GRAY_STAINED_GLASS;
 			potionEffect = new PotionEffect(PotionEffectType.INVISIBILITY, 40, 0);
 		}
 		else if (type == 2) {
+			color = Color.ORANGE;
 			material = Material.ORANGE_STAINED_GLASS;
 			potionEffect = new PotionEffect(PotionEffectType.SATURATION, 20, 0);
 		}
 		if (type == 3) {
+			color = Color.RED;
 			material = Material.RED_STAINED_GLASS;
 			potionEffect = new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 40, 0);
 		}
@@ -461,11 +491,12 @@ public class Guardian {
 
 		PotionEffect finalPotionEffect = potionEffect;
 		Material finalMaterial = material;
+		Color finalColor = color;
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				if (item.isOnGround()) {
-					if (!setTotem(item.getLocation(), finalMaterial, finalPotionEffect, plugin)) {
+					if (!setTotem(item.getLocation(), finalMaterial, finalColor, finalPotionEffect, plugin)) {
 						p.sendMessage("Totem requires two blocks of vertical space.");
 					}
 					item.remove();
