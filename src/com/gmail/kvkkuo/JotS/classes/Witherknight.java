@@ -31,13 +31,6 @@ import java.util.List;
 
 public class Witherknight {
 	public static String[] SKILLS = Utils.readSkillsFromCSV("witherknight.csv");
-	static String[] TRAP_NAMES = new String[]{"Trap", "Curse", "Snare", "Shroud"};
-	static PotionEffect[] TRAP_EFFECTS = new PotionEffect[]{
-			new PotionEffect(PotionEffectType.POISON, 80, 2),
-			new PotionEffect(PotionEffectType.SLOW_DIGGING, 80, 2),
-			new PotionEffect(PotionEffectType.SLOW, 80, 2),
-			new PotionEffect(PotionEffectType.BLINDNESS, 80, 2)
-	};
 
 	public static Integer cast(Player p, Integer spell, Integer cooldown, Integer upgrade, Plugin pl) {
 		if (cooldown <= 0) {
@@ -239,8 +232,17 @@ public class Witherknight {
 			}.runTaskLater(plugin, 20+count*3);
 		}
 
+		BukkitTask task = new BukkitRunnable() {
+			public void run() {
+				for (Location loc: Geometry.getCirclePoints(center, Geometry.Plane.XZ, 5)) {
+					loc.getWorld().spawnParticle(Particle.SPELL_WITCH, Geometry.getGroundLocation(loc, 6), 1, 0, 0, 0, 0);
+				}
+			}
+		}.runTaskTimer(plugin, 0, 1);
+
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			public void run() {
+				task.cancel();
 				Utils.applyNearby(p.getLocation(), p, range, 1, range, (LivingEntity le) -> {
 					le.damage(2, p);
 					le.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 40, 1));
@@ -268,7 +270,9 @@ public class Witherknight {
 
 	public static void Rebirth(Player p, Plugin plugin) {
 		p.getWorld().spawnParticle(Particle.HEART, p.getEyeLocation(), 6, 0.3, 0.2, 0.3, 0);
-		p.setHealth(p.getHealth() + 1);
+		if (p.getHealth() <= 19) {
+			p.setHealth(p.getHealth() + 1);
+		}
 	}
 
 	public static void Spear(Player p, Plugin plugin) {
@@ -452,16 +456,28 @@ public class Witherknight {
 		}.runTaskLater(plugin, 10);
 	}
 
+	static String[] TRAP_NAMES = new String[]{"Trap", "Curse", "Snare", "Shroud"};
+	static Color[] TRAP_COLORS = new Color[]{Color.OLIVE, Color.SILVER, Color.GRAY, Color.BLACK};
+	static PotionEffect[] TRAP_EFFECTS = new PotionEffect[]{
+			new PotionEffect(PotionEffectType.POISON, 80, 2),
+			new PotionEffect(PotionEffectType.SLOW_DIGGING, 80, 2),
+			new PotionEffect(PotionEffectType.SLOW, 80, 2),
+			new PotionEffect(PotionEffectType.BLINDNESS, 80, 2)
+	};
+
 	public static void Trap(Player p, Plugin pl, int t) {
 		Item trap = p.getWorld().dropItem(p.getEyeLocation(), new ItemStack(Material.NETHER_QUARTZ_ORE));
+		trap.setVelocity(p.getLocation().getDirection());
 		trap.setPickupDelay(Integer.MAX_VALUE);
+		trap.setInvulnerable(true);
 		ArrayList<LivingEntity> excludePlayer = new ArrayList<>();
 		excludePlayer.add(p);
 		BukkitTask bt = new BukkitRunnable() {
 			public void run() {
-				LivingEntity nearest = Utils.getNearestEntity(trap.getLocation(), excludePlayer, 5, 5, 5);
+				Location trapLoc = trap.getLocation();
+				LivingEntity nearest = Utils.getNearestEntity(trapLoc, excludePlayer, 5, 5, 5);
 				if (nearest != null) {
-					Utils.applyNearby(trap.getLocation(), p, 5, 5, 5, (LivingEntity le) -> {
+					Utils.applyNearby(trapLoc, p, 5, 5, 5, (LivingEntity le) -> {
 						le.damage(4, p);
 						le.addPotionEffect(TRAP_EFFECTS[t]);
 						if (le instanceof Player) {
@@ -470,17 +486,14 @@ public class Witherknight {
 					});
 					// Teleport player
 					p.sendMessage("Your Shadow " + TRAP_NAMES[t] + " has been triggered!");
-					trap.getWorld().playSound(trap.getLocation(), Sound.ENTITY_CREEPER_HURT, 5, 1);
-					FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, Color.SILVER, false, false, false);
-					Location target = trap.getLocation();
-					trap.remove();
-
-					target.add(0, 12, 0);
+					trap.getWorld().playSound(trapLoc.add(0, 4, 0), Sound.ENTITY_CREEPER_HURT, 5, 1);
+					FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, TRAP_COLORS[t], false, false, false);
+					Location target = trap.getLocation().clone().add(0, 12, 0);;
 					for (int i = 0; i < 5; i++) {
 						int in = i;
 						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(pl, new Runnable() {
 							public void run() {
-								FireworkPlayer.fire(target, Type.BURST, Color.GRAY, false, false, false);
+								FireworkPlayer.fire(target, Type.BURST,  TRAP_COLORS[t], false, false, false);
 								if (in == 4) {
 									p.teleport(target);
 								} else {
@@ -489,7 +502,7 @@ public class Witherknight {
 							}
 						}, (40 + i * 5));
 					}
-
+					trap.remove();
 					this.cancel();
 				}
 			}
@@ -498,10 +511,10 @@ public class Witherknight {
 			public void run() {
 				if (!bt.isCancelled()) {
 					bt.cancel();
-					FireworkPlayer.fire(trap.getLocation(), Type.CREEPER, Color.SILVER, false, false, false);
+					FireworkPlayer.fire(trap.getLocation().add(0, 4, 0), Type.CREEPER,  TRAP_COLORS[t], false, false, false);
 					trap.remove();
 				}
 			}
-		}.runTaskLater(pl, 600);
+		}.runTaskLater(pl, 160);
 	}
 }

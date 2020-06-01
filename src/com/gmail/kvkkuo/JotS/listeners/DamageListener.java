@@ -129,9 +129,8 @@ public class DamageListener implements Listener {
 				}
 				// Paladin Divine Fire
 				if (pv.hasMetadata("divine")) {
-					if (Paladin.consumeFire(pv, plugin)) {
-						d.setFireTicks(60);
-						event.setDamage(0);
+					if (d instanceof LivingEntity) {
+						Paladin.consumeFire(pv, (LivingEntity) d, plugin);
 					}
 				}
 			}
@@ -162,7 +161,7 @@ public class DamageListener implements Listener {
 				}
 				// Paladin Shielding
 				if (p.hasMetadata("guard") && glacialBlocks.contains(cause)) {
-					if (Paladin.consumeGuard(p)) {
+					if (Paladin.consumeGuard(p, plugin)) {
 						event.setDamage(0);
 					}
 				}

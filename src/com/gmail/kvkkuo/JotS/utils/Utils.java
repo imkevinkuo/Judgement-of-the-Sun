@@ -77,9 +77,9 @@ public class Utils {
     	p.removeMetadata("kinetic", plugin);
 	}
 
-	public static List<Item> rotateItems(Player p, Material material, String itemName, int duration, double height, Plugin plugin) {
+	public static List<Item> rotateItems(Player p, Material material, String itemName, double height, int duration, int itemCount, Plugin plugin) {
 		List<Item> items = new ArrayList<>();
-		for (int i = 0; i < 3; i ++) {
+		for (int i = 0; i < itemCount; i ++) {
 			int in = i;
 			ItemStack is = new ItemStack(material);
 			ItemMeta im = is.getItemMeta();
@@ -88,12 +88,13 @@ public class Utils {
 			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
 			item.setPickupDelay(Integer.MAX_VALUE);
 			item.setGravity(false);
+			item.setInvulnerable(true);
 			items.add(item);
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					if (item.isDead()) {this.cancel();}
-					Location to = Geometry.getCirclePoint(p.getLocation().add(0, height,0), 1.5, (Math.PI*in*2/3) + (double) item.getTicksLived()/12);
+					Location to = Geometry.getCirclePoint(p.getLocation().add(0, height,0), 1.5, (Math.PI*in*2/itemCount) + (double) item.getTicksLived()/12);
 					Location from = item.getLocation();
 					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
 				}

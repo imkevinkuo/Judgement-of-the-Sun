@@ -169,10 +169,10 @@ public class Duelist {
 				public void run() {
 					double newAngle = startAngle - Math.PI*in/9;
 					Vector dir2 = new Vector(-Math.sin(newAngle), 0.3, Math.cos(newAngle)).multiply(3);
-					Location l = p.getLocation().add(dir2);
+					Location l = p.getLocation().add(p.getLocation().getDirection().normalize()).add(dir2);
 					w.spawnParticle(Particle.CRIT, l, 4, 0, 0, 0, 0.3);
 					Utils.applyNearby(l, p, 1, 1, 1, (LivingEntity le) -> {	
-						le.damage(6,p); 
+						le.damage(6, p);
 						le.setVelocity(dir2.multiply(0.2));
 					});
 				}
@@ -182,10 +182,10 @@ public class Duelist {
 				public void run() {
 					double newAngle = startAngle + Math.PI*in/9;
 					Vector dir2 = new Vector(-Math.sin(newAngle), 0.3, Math.cos(newAngle)).multiply(3);
-					Location l = p.getLocation().add(dir2);
+					Location l = p.getLocation().add(p.getLocation().getDirection().normalize()).add(dir2);
 					w.spawnParticle(Particle.CRIT, l, 4, 0, 0, 0, 0.3);
 					Utils.applyNearby(l, p, 1, 1, 1, (LivingEntity le) -> {	
-						le.damage(6,p); 
+						le.damage(6, p);
 						le.setVelocity(dir2.multiply(0.2));
 					});
 				}
@@ -363,13 +363,23 @@ public class Duelist {
 	//
 	private static void Empower(Player p, Plugin plugin, int type) {
 		p.setMetadata("empower", new FixedMetadataValue(plugin, type));
-		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_FALL, 1, 1);
+		p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
 		p.getWorld().spawnParticle(Particle.CLOUD, p.getEyeLocation(), 8, 0.5, 0.5, 0.5, 0);
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				if (p.hasMetadata("empower")) {
-					p.sendMessage("Your empowered attack wears off.");
+					p.getWorld().spawnParticle(Particle.CLOUD, p.getEyeLocation(), 1, 0.5, 0.5, 0.5, 0);
+				}
+				else {
+					this.cancel();
+				}
+			}
+		}.runTaskTimer(plugin, 0, 1);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (p.hasMetadata("empower")) {
 					p.removeMetadata("empower", plugin);
 				}
 			}
@@ -421,7 +431,7 @@ public class Duelist {
 	private static void Spellshield(Player p, Plugin plugin, int upgrade) {
 		UUID uid = p.getUniqueId();
 		p.setMetadata("spellshield", new FixedMetadataValue(plugin, upgrade));
-		shields.put(uid, Utils.rotateItems(p, Material.PRISMARINE_SHARD, "guard",160, p.getEyeHeight()/2, plugin));
+		shields.put(uid, Utils.rotateItems(p, Material.PRISMARINE_SHARD, "guard",p.getEyeHeight()/2, 160, 3, plugin));
 
 		new BukkitRunnable() {
 			@Override

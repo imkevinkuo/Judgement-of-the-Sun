@@ -1,10 +1,6 @@
 package com.gmail.kvkkuo.JotS.classes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Stack;
-import java.util.UUID;
+import java.util.*;
 
 import com.gmail.kvkkuo.JotS.utils.Geometry;
 import org.bukkit.Color;
@@ -42,8 +38,8 @@ public class Paladin {
 	public static String[] SKILLS = Utils.readSkillsFromCSV("paladin.csv");
 	private static BlockData icedata = Material.ICE.createBlockData();
 	private static BlockData firedata = Material.FIRE.createBlockData();
-	public static HashMap<UUID, Stack<Item>> guards = new HashMap<UUID, Stack<Item>>();
-	public static HashMap<UUID, Stack<Item>> fires = new HashMap<UUID, Stack<Item>>();
+	public static HashMap<UUID, List<Item>> guards = new HashMap<>();
+	public static HashMap<UUID, List<Item>> fires = new HashMap<>();
 
 	public static Integer cast(Player p, Integer spell, Integer cooldown, Integer upgrade, Plugin pl) {
 		if (cooldown <= 0) {
@@ -385,55 +381,29 @@ public class Paladin {
 	
 	public static void Guard(Player p, Plugin plugin) {
 		p.setMetadata("guard", new FixedMetadataValue(plugin, true));
-		double h = p.getEyeHeight()/2;
-		UUID uid = p.getUniqueId();
-		for (int i = 0; i < 5; i ++) {
-			Integer in = i;
-			ItemStack is = new ItemStack(Material.ICE);
-			ItemMeta im = is.getItemMeta();
-			im.setDisplayName("guard" + i + p.getName());
-			is.setItemMeta(im);
-			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
-			item.setPickupDelay(Integer.MAX_VALUE);
-			item.setGravity(false);
-			guards.get(uid).push(item);
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					if (item.isDead()) {this.cancel();}
-					Location to = Geometry.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/5) + (double) item.getTicksLived()/12);
-					Location from = item.getLocation();
-					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
-				}
-			}.runTaskTimer(plugin, 1, 1);
-		}
+		guards.put(p.getUniqueId(), Utils.rotateItems(p, Material.ICE, "divine", p.getEyeHeight()/2, 160, 5, plugin));
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				for (Item pm:guards.get(uid)) {
-					p.getWorld().spawnParticle(Particle.BLOCK_DUST, pm.getLocation(), 20, 0, 0, 0, 0.1, icedata);
-					pm.remove();
-				}
 				p.removeMetadata("guard", plugin);
-				guards.remove(uid);
 			}
 		}.runTaskLater(plugin, 160);
 	}
-	public static boolean consumeGuard(Player p) {
-		for (Entity e:p.getNearbyEntities(2, 2, 2)) {
-			if (e.getType().equals(EntityType.DROPPED_ITEM)) {
-				Item item = (Item) e;
-				ItemStack is = item.getItemStack();
-				ItemMeta im = is.getItemMeta();
-				String name = im.getDisplayName();
-				if (is.getType().equals(Material.ICE) && name.startsWith("guard") && name.endsWith(p.getName())) {
-					p.setFireTicks(0);
-					p.getWorld().spawnParticle(Particle.BLOCK_DUST, item.getLocation(), 20, 0, 0, 0, 0.1, icedata);
-					p.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 1);
-					item.remove();
-					return true;
-				}
+
+	public static boolean consumeGuard(Player p, Plugin plugin) {
+		if (guards.containsKey(p.getUniqueId())) {
+			List<Item> blocks = guards.get(p.getUniqueId());
+			if (blocks.size() > 0) {
+				Item pm = blocks.remove(0);
+				p.getWorld().spawnParticle(Particle.BLOCK_CRACK, pm.getLocation(), 3, 0, 0, 0, 0.1, icedata);
+				p.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 1);
+				p.setFireTicks(0);
+				pm.remove();
 			}
+			if (blocks.size() == 0) {
+				p.removeMetadata("guard", plugin);
+			}
+			return true;
 		}
 		return false;
 	}
@@ -450,6 +420,7 @@ public class Paladin {
 						SmallFireball fire = p.launchProjectile(SmallFireball.class);
 						fire.setVelocity(v);
 						fire.setShooter(p);
+						fire.setIsIncendiary(false);
 					}
 				}.runTaskLater(plugin, b*10 + i);
 			}
@@ -524,12 +495,12 @@ public class Paladin {
 			public void run() {
 				Utils.applyNearby(center, null, 10, 10, 10, (LivingEntity le) -> {
 					double distance = le.getLocation().distance(center);
-					if (distance > 6) {
+					if (distance > 7) {
 						if (distance < 8) { // inside
 							le.setVelocity(le.getLocation().subtract(center).toVector().normalize().multiply(-1));
 							le.setFireTicks(40);
 						}
-						else if (distance < 10) { // outside
+						else if (distance < 9) { // outside
 							le.setVelocity(le.getLocation().subtract(center).toVector().normalize());
 							le.setFireTicks(40);
 						}
@@ -548,60 +519,32 @@ public class Paladin {
 	public static void Divine(Player p, Plugin plugin) {
 		p.setMetadata("divine", new FixedMetadataValue(plugin, true));
 		p.playSound(p.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 1, 1);
-		double h = p.getEyeHeight()/2;
-		UUID uid = p.getUniqueId();
-		for (int i = 0; i < 5; i ++) {
-			Integer in = i;
-			ItemStack is = new ItemStack(Material.BLAZE_POWDER);
-			ItemMeta im = is.getItemMeta();
-			im.setDisplayName("divine" + i + p.getName());
-			is.setItemMeta(im);
-			Item item = p.getWorld().dropItem(p.getEyeLocation(), is);
-			item.setPickupDelay(Integer.MAX_VALUE);
-			item.setGravity(false);
-			item.setFireTicks(160);
-			item.setInvulnerable(true);
-			fires.get(uid).push(item);
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					if (item.isDead()) {this.cancel();}
-					Location to = Geometry.getCirclePoint(p.getLocation().add(0,h,0), 1.5, (Math.PI*in*2/5) + (double) item.getTicksLived()/12);
-					Location from = item.getLocation();
-					item.setVelocity(to.subtract(from).toVector().multiply(0.2));
-				}
-			}.runTaskTimer(plugin, 1, 1);
-		}
+		fires.put(p.getUniqueId(), Utils.rotateItems(p, Material.BLAZE_POWDER, "divine", p.getEyeHeight()/2, 160, 5, plugin));
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				for (Item pm:fires.get(uid)) {
-					p.getWorld().spawnParticle(Particle.BLOCK_CRACK, pm.getLocation(), 3, 0, 0, 0, 0.1, firedata);
-					pm.remove();
-				}
 				p.removeMetadata("divine", plugin);
-				fires.remove(uid);
 			}
 		}.runTaskLater(plugin, 160);
 	}
-	public static boolean consumeFire(Player p, Plugin plugin) {
+	public static void consumeFire(Player p, LivingEntity attacker, Plugin plugin) {
 		if (fires.containsKey(p.getUniqueId())) {
-			Stack<Item> blocks = fires.get(p.getUniqueId());
+			List<Item> blocks = fires.get(p.getUniqueId());
 			if (blocks.size() > 0) {
-				Item pm = blocks.pop();
+				Item pm = blocks.remove(0);
 				p.getWorld().spawnParticle(Particle.BLOCK_CRACK, pm.getLocation(), 3, 0, 0, 0, 0.1, firedata);
+				p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
+				attacker.setFireTicks(60);
 				pm.remove();
 			}
 			if (blocks.size() == 0) {
 				p.removeMetadata("divine", plugin);
 			}
-			return true;
 		}
-		return false;
 	}
 	
 	public static void Haste(Player p) {
-		p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 120, 4));
+		p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 120, 1));
 		FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.WHITE, false, false, false);
 	}
 	public static void Augment(Player p) {
@@ -634,7 +577,7 @@ public class Paladin {
 		p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80, 4));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 4));
 		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 6));
-		p.sendMessage("The Goddess Arda blesses her servants with eternal life.");
+		p.sendMessage("The Goddess Arda blesses you with another life.");
 		new BukkitRunnable() {
 			@Override
 			public void run() {

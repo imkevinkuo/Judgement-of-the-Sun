@@ -280,7 +280,7 @@ public class Guardian {
 	public static void Spines(Player p, Plugin plugin) {
 		FireworkPlayer.fire(p.getEyeLocation(), Type.BALL, Color.OLIVE, false, false, false);
 		p.setMetadata("spines", new FixedMetadataValue(plugin, true));
-		Utils.rotateItems(p, Material.GREEN_DYE, "spine",200, p.getEyeHeight()/2, plugin);
+		Utils.rotateItems(p, Material.GREEN_DYE, "spine",p.getEyeHeight()/2, 200, 3, plugin);
 
 		new BukkitRunnable() {
 			public void run() {
@@ -359,8 +359,8 @@ public class Guardian {
 	}
 	public static void Mirror(Player p, Plugin plugin) {
 		FireworkPlayer.fire(p.getEyeLocation(), Type.BALL, Color.LIME, false, false, false);
-		List<Item> mirrors = Utils.rotateItems(p, Material.GREEN_STAINED_GLASS_PANE, "mirror",160, 3*p.getEyeHeight()/4, plugin);
-		List<Item> mirrors2 = Utils.rotateItems(p, Material.GREEN_STAINED_GLASS_PANE, "mirror",160, p.getEyeHeight()/4, plugin);
+		List<Item> mirrors = Utils.rotateItems(p, Material.GREEN_STAINED_GLASS_PANE, "mirror",3*p.getEyeHeight()/4, 160, 3, plugin);
+		List<Item> mirrors2 = Utils.rotateItems(p, Material.GREEN_STAINED_GLASS_PANE, "mirror",p.getEyeHeight()/4, 160, 3, plugin);
 		BukkitTask task = new BukkitRunnable() {
 			public void run() {
 				for (Entity e:p.getNearbyEntities(3, 3, 3)) {
