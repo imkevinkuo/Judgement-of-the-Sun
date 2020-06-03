@@ -16,12 +16,9 @@ import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -259,15 +256,17 @@ public class DamageListener implements Listener {
 			Raider.detonate(fire, p, plugin);
     	}
     }
-    
+
      // No environmental fire
-//    @EventHandler
-//    public void FireballFire(BlockIgniteEvent e) {
-//    	e.setCancelled(true);
-//    }
-    // No burning in sun
+    @EventHandler
+    public void FireballFire(BlockIgniteEvent e) {
+    	e.setCancelled(true);
+    }
+	// No burning in sun
     @EventHandler
     public void onEntityCombust(EntityCombustEvent e){
-    	e.setCancelled(true);
+		if (!(e instanceof EntityCombustByEntityEvent) && !(e instanceof EntityCombustByBlockEvent)) {
+			e.setCancelled(true);
+		}
     }
 }

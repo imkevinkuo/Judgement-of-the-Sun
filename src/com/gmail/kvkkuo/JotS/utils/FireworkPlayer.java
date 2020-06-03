@@ -11,6 +11,7 @@ import com.gmail.kvkkuo.JotS.JotS;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class FireworkPlayer {
     
@@ -34,10 +35,10 @@ public class FireworkPlayer {
 
 		firework.setSilent(true);
 		firework.setFireworkMeta(meta);
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(JotS.getPlugin(JotS.class), new Runnable() {
-            public void run() {
-               	firework.detonate();
-            }
-        }, (2));
+		new BukkitRunnable() {
+			public void run() {
+				firework.detonate();
+			}
+		}.runTaskLater(JotS.getPlugin(JotS.class), 1);
 	}
 }

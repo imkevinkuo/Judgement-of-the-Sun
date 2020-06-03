@@ -13,7 +13,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -36,8 +35,6 @@ import com.gmail.kvkkuo.JotS.utils.RayTrace;
 
 public class Paladin {
 	public static String[] SKILLS = Utils.readSkillsFromCSV("paladin.csv");
-	private static BlockData icedata = Material.ICE.createBlockData();
-	private static BlockData firedata = Material.FIRE.createBlockData();
 	public static HashMap<UUID, List<Item>> guards = new HashMap<>();
 	public static HashMap<UUID, List<Item>> fires = new HashMap<>();
 
@@ -141,25 +138,36 @@ public class Paladin {
 		return false;
 	}
 	public static void Judgement(Player p, Plugin plugin) {
-		World w = p.getWorld();
-		Utils.applyNearby(p.getLocation(), p, 8, 8, 8, (LivingEntity le) -> {
-			if (!le.isOnGround()) {
-				w.strikeLightningEffect(le.getLocation());
-				w.createExplosion(le.getLocation(), 0);
-				Utils.magicDamage(p, le, 2, plugin);
-				BukkitTask down = new BukkitRunnable() {
-					@Override
-					public void run() {
-						le.setVelocity(le.getVelocity().setY(-3));
+		int r = 4;
+		for (int i = 0; i < 12; i++) {
+			new BukkitRunnable() {
+				public void run() {
+					Random rand = new Random();
+					double dx = 2*r*(rand.nextDouble() - 0.5);
+					double dz = 2*r*(rand.nextDouble() - 0.5);
+					Location end = Geometry.getGroundLocation(p.getLocation().add(dx, 0, dz), 6).subtract(0, 1, 0);
+					Location start = end.add(0, 12, 0);
+					for (int count = 0; count < 12; count++) {
+						int finalCount = count;
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								if (finalCount == 11) {
+									FireworkPlayer.fire(end, Type.BURST, Color.WHITE, false, false, false);
+									Utils.applyNearby(end, p, 2, 2, 2, (LivingEntity le) -> {
+										Utils.magicDamage(p, le, 4, plugin);
+									});
+								}
+								else {
+									p.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, start, 1, 0, 0, 0, 0.1);
+									start.subtract(0, 1, 0);
+								}
+							}
+						}.runTaskLater(plugin, count);
 					}
-				}.runTaskTimer(plugin, 1, 3);
-				new BukkitRunnable() {
-					public void run() {
-						down.cancel();
-					}
-				}.runTaskLater(plugin, 12);
-			}
-		});
+				}
+			}.runTaskLater(plugin, i*10);
+		}
 	}
 	public static void Arclight(Player p, Plugin plugin) {
 		ArrayList<LivingEntity> affected = new ArrayList<>();
@@ -269,19 +277,19 @@ public class Paladin {
 				public void run() {
 					p.getWorld().playSound(p.getLocation(), Sound.BLOCK_SNOW_PLACE, 1, 1);
 				}
-			}.runTaskLater(plugin, 10*j);
+			}.runTaskLater(plugin, 20*j);
 			for (int i = 0; i < 6; i ++) {
 				new BukkitRunnable() {
 					public void run() {
 						Vector v = p.getLocation().getDirection(); //Multiply the player's direction by the power
 						Random rand = new Random();
-						v.add(new Vector((rand.nextDouble() - 0.5)/2, p.getLocation().getDirection().getY(), (rand.nextDouble() - 0.5)/2)); //Add the velocity by a random number
+						v.add(new Vector((rand.nextDouble() - 0.5)/3, p.getLocation().getDirection().getY(), (rand.nextDouble() - 0.5)/3));
 						Snowball snow = p.launchProjectile(Snowball.class);
 						snow.setVelocity(v);
 						snow.setShooter(p);
 						snow.setMetadata("ice", new FixedMetadataValue(plugin, true));
 					}
-				}.runTaskLater(plugin, i + 10*j);
+				}.runTaskLater(plugin, i + 20*j);
 			}
 		}
 	}
@@ -395,7 +403,7 @@ public class Paladin {
 			List<Item> blocks = guards.get(p.getUniqueId());
 			if (blocks.size() > 0) {
 				Item pm = blocks.remove(0);
-				p.getWorld().spawnParticle(Particle.BLOCK_CRACK, pm.getLocation(), 3, 0, 0, 0, 0.1, icedata);
+				p.getWorld().spawnParticle(Particle.BLOCK_CRACK, pm.getLocation(), 20, 0, 0, 0, 0.1, Material.ICE.createBlockData());
 				p.playSound(p.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 1);
 				p.setFireTicks(0);
 				pm.remove();
@@ -416,20 +424,19 @@ public class Paladin {
 					public void run() {
 						Vector v = p.getLocation().getDirection();
 						Random rand = new Random();
-						v.add(new Vector((rand.nextDouble() - 0.5), p.getLocation().getDirection().getY(), (rand.nextDouble() - 0.5)));
+						v.add(new Vector((rand.nextDouble() - 0.5)/3, p.getLocation().getDirection().getY(), (rand.nextDouble() - 0.5)/3));
 						SmallFireball fire = p.launchProjectile(SmallFireball.class);
 						fire.setVelocity(v);
 						fire.setShooter(p);
-						fire.setIsIncendiary(false);
 					}
-				}.runTaskLater(plugin, b*10 + i);
+				}.runTaskLater(plugin, b*20 + i);
 			}
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					p.getWorld().playSound(p.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1, 1);
 				}
-			}.runTaskLater(plugin, b*10);
+			}.runTaskLater(plugin, b*20);
 		}
 	}
 	public static void Purifying(Player p, Plugin plugin) {
@@ -532,7 +539,7 @@ public class Paladin {
 			List<Item> blocks = fires.get(p.getUniqueId());
 			if (blocks.size() > 0) {
 				Item pm = blocks.remove(0);
-				p.getWorld().spawnParticle(Particle.BLOCK_CRACK, pm.getLocation(), 3, 0, 0, 0, 0.1, firedata);
+				p.getWorld().spawnParticle(Particle.ITEM_CRACK, pm.getLocation(), 20, 0, 0, 0, 0.1, new ItemStack(Material.BLAZE_POWDER));
 				p.playSound(p.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1, 1);
 				attacker.setFireTicks(60);
 				pm.remove();
@@ -573,10 +580,13 @@ public class Paladin {
 		p.setHealth(1);
 		p.setNoDamageTicks(80);
 		p.setGlowing(true);
-		// noknockback thing needed too
-		p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 80, 4));
-		p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 4));
-		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 6));
+		FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.YELLOW, false, false, false);
+		for (Entity e:p.getNearbyEntities(2, 2, 2)) {
+			e.setVelocity(e.getLocation().subtract(p.getLocation()).toVector().normalize().multiply(2.0));
+		}
+		p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 6));
+		p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 4));
+		p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 6));
 		p.sendMessage("The Goddess Arda blesses you with another life.");
 		new BukkitRunnable() {
 			@Override
@@ -584,9 +594,9 @@ public class Paladin {
 				p.setGlowing(false);
 				FireworkPlayer.fire(p.getLocation(), Type.STAR, Color.YELLOW, false, false, false);
 				for (Entity e:p.getNearbyEntities(2, 2, 2)) {
-					e.setVelocity(e.getLocation().subtract(p.getLocation()).toVector().normalize());
+					e.setVelocity(e.getLocation().subtract(p.getLocation()).toVector().normalize().multiply(2.0));
 				}
 			}
-		}.runTaskLater(plugin, 80);
+		}.runTaskLater(plugin, 60);
 	}
 }
